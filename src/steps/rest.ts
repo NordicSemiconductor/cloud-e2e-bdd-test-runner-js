@@ -11,6 +11,21 @@ export const restStepRunners = <W extends Store>(): StepRunner<W>[] => {
     willRun: regexMatcher(rx),
     run,
   });
+  // When using a transform in a query the results can contain
+  // null values (items that didn't match the transform), which
+  // can cause random failures when testing for equality. This
+  // function removes the nulls from body.items.
+  const filterOutNulls = (body: any) => {
+    if (body.items && body.items.length > 0) {
+      const originalItemsCount = body.items.length;
+      body.items = body.items.filter((item: any) => item !== null);
+      console.log(
+        `filterOutNulls removed ${originalItemsCount -
+          body.items.length} null items`,
+      );
+    }
+    return body;
+  };
   return [
     s(/^the ([^ ]+) header is "([^"]+)"$/, async ([name, value]) => {
       client.headers[name] = value;
@@ -53,7 +68,9 @@ export const restStepRunners = <W extends Store>(): StepRunner<W>[] => {
     }),
     s(/^"([^"]+)" of the response body is not empty$/, async ([exp]) => {
       const e = jsonata(exp);
-      const v = e.evaluate(client.response.body);
+      const body = filterOutNulls(client.response.body);
+      console.log(body);
+      const v = e.evaluate(body);
       expect(v).to.not.be.an('undefined');
       return v;
     }),
@@ -61,7 +78,9 @@ export const restStepRunners = <W extends Store>(): StepRunner<W>[] => {
       /^"([^"]+)" of the response body should equal "([^"]+)"$/,
       async ([exp, expected]) => {
         const e = jsonata(exp);
-        const v = e.evaluate(client.response.body);
+        const body = filterOutNulls(client.response.body);
+        console.log(body);
+        const v = e.evaluate(body);
         expect(v).to.equal(expected);
         return v;
       },
@@ -70,7 +89,9 @@ export const restStepRunners = <W extends Store>(): StepRunner<W>[] => {
       /^"([^"]+)" of the response body should equal ([0-9]+)$/,
       async ([exp, expected]) => {
         const e = jsonata(exp);
-        const v = e.evaluate(client.response.body);
+        const body = filterOutNulls(client.response.body);
+        console.log(body);
+        const v = e.evaluate(body);
         expect(v).to.equal(+expected);
         return v;
       },
@@ -83,7 +104,9 @@ export const restStepRunners = <W extends Store>(): StepRunner<W>[] => {
         }
         const j = JSON.parse(step.interpolatedArgument);
         const e = jsonata(exp);
-        const v = e.evaluate(client.response.body);
+        const body = filterOutNulls(client.response.body);
+        console.log(body);
+        const v = e.evaluate(body);
         expect(v).to.deep.equal(j);
         return v;
       },
