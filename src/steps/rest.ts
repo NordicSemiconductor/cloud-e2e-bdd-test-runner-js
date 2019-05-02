@@ -63,8 +63,10 @@ export const restStepRunners = <W extends Store>(): StepRunner<W>[] => {
         throw new Error('Must provide argument!');
       }
       const j = JSON.parse(step.interpolatedArgument);
-      expect(client.response.body).to.deep.equal(j);
-      return client.response.body;
+      const body = filterOutNulls(client.response.body);
+      console.log(body);
+      expect(body).to.deep.equal(j);
+      return body;
     }),
     s(/^"([^"]+)" of the response body is not empty$/, async ([exp]) => {
       const e = jsonata(exp);
