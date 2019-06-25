@@ -42,12 +42,12 @@ export const restStepRunners = <W extends Store>(): StepRunner<W>[] => {
         return client.request(method, path);
       },
     ),
-    s(/^I GET ([^ ]+) with this query$/, async ([path], step) => {
+    s(/^I (GET|DELETE) ([^ ]+) with this query$/, async ([method, path], step) => {
       if (!step.interpolatedArgument) {
         throw new Error('Must provide argument!');
       }
       const j = JSON.parse(step.interpolatedArgument);
-      return client.request('GET', path, j);
+      return client.request(method, path, j);
     }),
     s(/^the response status code should be ([0-9]+)$/, async ([statusCode]) => {
       expect(client.response.statusCode).to.equal(+statusCode);
