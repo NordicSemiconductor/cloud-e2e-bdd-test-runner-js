@@ -102,6 +102,17 @@ export const restStepRunners = <W extends Store>(): StepRunner<W>[] => {
       },
     ),
     s(
+      /^"([^"]+)" of the response body should be greater than ([0-9]+)$/,
+      async ([exp, expected]) => {
+        const e = jsonata(exp);
+        const body = filterOutNulls(client.response.body);
+        console.log(body);
+        const v = e.evaluate(body);
+        expect(v).to.be.gt(+expected);
+        return v;
+      },
+    ),
+    s(
       /^"([^"]+)" of the response body should equal this JSON$/,
       async ([exp], step) => {
         if (!step.interpolatedArgument) {
