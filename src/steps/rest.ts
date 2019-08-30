@@ -135,7 +135,7 @@ export const restStepRunners = <W extends Store>(): StepRunner<W>[] => {
           throw new Error('Must provide argument!');
         }
         const re = new RegExp('<guid>', 'i');
-        if (!path.match(re)) {
+        if (path.match(re)) {
           path = path.replace('<guid>', v4());
         }
         const j = JSON.parse(step.interpolatedArgument);
