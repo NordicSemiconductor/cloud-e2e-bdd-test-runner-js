@@ -3,6 +3,7 @@ import { StepRunner, StepRunnerFunc, Store } from '../lib/runner';
 import { RestClient } from '../lib/rest-client';
 import { expect } from 'chai';
 import { regexMatcher } from '../lib/regexMatcher';
+import { v4 } from 'uuid';
 
 const client = new RestClient();
 
@@ -132,6 +133,10 @@ export const restStepRunners = <W extends Store>(): StepRunner<W>[] => {
       async ([method, path], step) => {
         if (!step.interpolatedArgument) {
           throw new Error('Must provide argument!');
+        }
+        const re = new RegExp('<guid>', 'i');
+        if (!path.match(re)) {
+          path = path.replace('<guid>', v4());
         }
         const j = JSON.parse(step.interpolatedArgument);
         return [await client.request(method, path, undefined, undefined, j), j];
