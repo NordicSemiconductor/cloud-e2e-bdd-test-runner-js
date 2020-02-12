@@ -4,6 +4,7 @@ import { RestClient } from '../lib/rest-client';
 import { expect } from 'chai';
 import { regexMatcher } from '../lib/regexMatcher';
 import { v4 } from 'uuid';
+import { readFileSync } from 'fs';
 
 const client = new RestClient();
 
@@ -140,6 +141,20 @@ export const restStepRunners = <W extends Store>(): StepRunner<W>[] => {
         }
         const j = JSON.parse(step.interpolatedArgument);
         return [await client.request(method, path, undefined, undefined, j), j];
+      },
+    ),
+    s(
+      /^I (POST|PUT|PATCH) (?:to )?([^ ]+) with the file"([^"]+)"$/,
+      async ([method, path, imageFile]) => {
+        const re = new RegExp('<guid>', 'i');
+        if (path.match(re)) {
+          path = path.replace('<guid>', v4());
+        }
+        const imageBuffer = readFileSync(imageFile);
+        return [
+          await client.request(method, path, undefined, undefined, imageBuffer),
+          imageBuffer,
+        ];
       },
     ),
     s(
