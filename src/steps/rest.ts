@@ -144,7 +144,7 @@ export const restStepRunners = <W extends Store>(): StepRunner<W>[] => {
       },
     ),
     s(
-      /^I (POST|PUT|PATCH) (?:to )?([^ ]+) with the file"([^"]+)"$/,
+      /^I (POST|PUT|PATCH) (?:to )?([^ ]+) with the file "([^"]+)"$/,
       async ([method, path, imageFile]) => {
         const re = new RegExp('<guid>', 'i');
         if (path.match(re)) {
