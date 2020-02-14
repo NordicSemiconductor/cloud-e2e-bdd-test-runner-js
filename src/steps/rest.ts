@@ -152,8 +152,16 @@ export const restStepRunners = <W extends Store>(): StepRunner<W>[] => {
         }
         const imageBuffer = readFileSync(imageFile);
         return [
-          await client.request(method, path, undefined, undefined, imageBuffer),
-          imageBuffer,
+          await client.request(
+            method,
+            path,
+            undefined,
+            undefined,
+            imageBuffer,
+            true,
+          ),
+          imageBuffer.length,
+          // imageBuffer,
         ];
       },
     ),
