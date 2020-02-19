@@ -29,11 +29,12 @@ export const restStepRunners = <W extends Store>(): StepRunner<W>[] => {
     return body;
   };
   return [
+    // Note! Setting a header sets it for all future requests too, until you change it, or clear it (see below)
     s(/^the ([^ ]+) header is "([^"]+)"$/, async ([name, value]) => {
       client.headers[name] = value;
     }),
-    s(/^the ([^ ]+) header is "([^"]+)"$/, async ([name, value]) => {
-      client.headers[name] = value;
+    s(/^I clear the ([^ ]+) request header$/, async ([name]) => {
+      delete client.headers[name];
     }),
     s(/^the endpoint is "([^"]+)"$/, async ([endpoint]) => {
       client.endpoint = endpoint;
