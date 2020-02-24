@@ -146,23 +146,22 @@ export const restStepRunners = <W extends Store>(): StepRunner<W>[] => {
     ),
     s(
       /^I (POST|PUT|PATCH) (?:to )?([^ ]+) with the file "([^"]+)"$/,
-      async ([method, path, imageFile]) => {
+      async ([method, path, localFile]) => {
         const re = new RegExp('<guid>', 'i');
         if (path.match(re)) {
           path = path.replace('<guid>', v4());
         }
-        const imageBuffer = readFileSync(imageFile);
+        const buffer = readFileSync(localFile);
         return [
           await client.request(
             method,
             path,
             undefined,
             undefined,
-            imageBuffer,
-            true,
+            buffer,
+            true, // passBinary
           ),
-          imageBuffer.length,
-          // imageBuffer,
+          buffer.length,
         ];
       },
     ),
