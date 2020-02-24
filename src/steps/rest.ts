@@ -4,6 +4,7 @@ import { RestClient } from '../lib/rest-client';
 import { expect } from 'chai';
 import { regexMatcher } from '../lib/regexMatcher';
 import { v4 } from 'uuid';
+import { readFileSync } from 'fs';
 
 const client = new RestClient();
 
@@ -28,11 +29,12 @@ export const restStepRunners = <W extends Store>(): StepRunner<W>[] => {
     return body;
   };
   return [
+    // Note! Setting a header sets it for all future requests too, until you change it, or clear it (see below)
     s(/^the ([^ ]+) header is "([^"]+)"$/, async ([name, value]) => {
       client.headers[name] = value;
     }),
-    s(/^the ([^ ]+) header is "([^"]+)"$/, async ([name, value]) => {
-      client.headers[name] = value;
+    s(/^I clear the ([^ ]+) request header$/, async ([name]) => {
+      delete client.headers[name];
     }),
     s(/^the endpoint is "([^"]+)"$/, async ([endpoint]) => {
       client.endpoint = endpoint;
@@ -140,6 +142,27 @@ export const restStepRunners = <W extends Store>(): StepRunner<W>[] => {
         }
         const j = JSON.parse(step.interpolatedArgument);
         return [await client.request(method, path, undefined, undefined, j), j];
+      },
+    ),
+    s(
+      /^I (POST|PUT|PATCH) (?:to )?([^ ]+) with the file "([^"]+)"$/,
+      async ([method, path, localFile]) => {
+        const re = new RegExp('<guid>', 'i');
+        if (path.match(re)) {
+          path = path.replace('<guid>', v4());
+        }
+        const buffer = readFileSync(localFile);
+        return [
+          await client.request(
+            method,
+            path,
+            undefined,
+            undefined,
+            buffer,
+            true, // passBinary
+          ),
+          buffer.length,
+        ];
       },
     ),
     s(

@@ -35,6 +35,7 @@ export class RestClient {
     queryString?: object,
     extraHeaders?: Headers,
     body?: any,
+    passBinary: boolean = false,
   ): Promise<string> {
     const headers: Headers = {
       ...this.headers,
@@ -44,14 +45,15 @@ export class RestClient {
       /^\/+/,
       '',
     )}${toQueryString(queryString || {})}`;
+    const bodyToSend = body
+      ? !passBinary && typeof body !== 'string'
+        ? JSON.stringify(body)
+        : body
+      : undefined;
     const res: Response = await fetch(url, {
       method,
       headers,
-      body: body
-        ? typeof body !== 'string'
-          ? JSON.stringify(body)
-          : body
-        : undefined,
+      body: bodyToSend,
     });
     const contentType: string = res.headers.get('content-type') || '',
       mediaType: string = contentType.split(';')[0];
