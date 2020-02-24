@@ -1,7 +1,7 @@
 {
   "name": "@nrfcloud/bdd-feature-runner-aws",
   "version": "0.0.0-development",
-  "description": "BDD Test Runner for cloud native applications made with AWS",
+  "description": "BDD Test Runner for cloud native applications made with AWS.",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
   "scripts": {
