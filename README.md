@@ -1,17 +1,28 @@
-# BDD Feature Runner for AWS [![npm version](https://img.shields.io/npm/v/@coderbyheart/bdd-feature-runner-aws.svg)](https://www.npmjs.com/package/@coderbyheart/bdd-feature-runner-aws)
+# End-to-end Behaviour Driven Design Test Runner [![npm version](https://img.shields.io/npm/v/@bifravst/e2e-bdd-test-runner.svg)](https://www.npmjs.com/package/@bifravst/e2e-bdd-test-runner)
 
-[![GitHub Actions](https://github.com/coderbyheart/bdd-feature-runner-aws/workflows/Test%20and%20Release/badge.svg)](https://github.com/coderbyheart/bdd-feature-runner-aws/actions)
-[![Known Vulnerabilities](https://snyk.io/test/github/coderbyheart/bdd-feature-runner-aws/badge.svg?targetFile=package.json)](https://snyk.io/test/github/coderbyheart/bdd-feature-runner-aws?targetFile=package.json)
+[![GitHub Actions](https://github.com/bifravst/e2e-bdd-test-runner/workflows/Test%20and%20Release/badge.svg)](https://github.com/bifravst/e2e-bdd-test-runner/actions)
+[![Known Vulnerabilities](https://snyk.io/test/github/bifravst/e2e-bdd-test-runner/badge.svg?targetFile=package.json)](https://snyk.io/test/github/bifravst/e2e-bdd-test-runner?targetFile=package.json)
 [![semantic-release](https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg)](https://github.com/semantic-release/semantic-release)
 [![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg)](http://commitizen.github.io/cz-cli/)
 [![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg)](https://github.com/prettier/prettier/)
 [![ESLint: TypeScript](https://img.shields.io/badge/ESLint-TypeScript-blue.svg)](https://github.com/typescript-eslint/typescript-eslint)
 
-An implementation of a [Gherkin](https://docs.cucumber.io/gherkin/) feature
-runner for cloud native applications made with AWS.
+Implementation of a test-runner for end-to-end tests of cloud-native
+applications using [Gherkin features](https://docs.cucumber.io/gherkin/).
 
-Example usage:
-[bdd-feature-runner-aws-example](https://github.com/coderbyheart/bdd-feature-runner-aws-example).
+Initially developed for use with [AWS](https://aws.amazon.com/) based solutions
+but also supports testing against generic REST, GraphQL, and Websocket APIs.
+
+Simple example usage:
+[e2e-bdd-test-runner-example](https://github.com/bifravst/e2e-bdd-test-runner-example).
+
+Other projects using this project for testing:
+
+- [Bifravst AWS](https://github.com/bifravst/aws)
+- [Distribute Aid: Flexport Shipment Monitor](https://github.com/distributeaid/flexport-shipment-monitor)
+- [Distribute Aid: Twilio Integration](https://github.com/distributeaid/twilio-integration)
+- Use with Phoenix (Elixir):
+  [Masks for Docs: Toolbox](https://gitlab.com/masksfordocs/toolbox/-/commit/f98f05e2be3dadc23f6a4e6936a17b5ec293801d)
 
 ## Motivation
 
@@ -22,7 +33,7 @@ Example usage:
 
 ## Installation
 
-    npm i --save-dev @coderbyheart/bdd-feature-runner-aws
+    npm i --save-dev @bifravst/e2e-bdd-test-runner
 
 ## Special annotations
 

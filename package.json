@@ -1,7 +1,7 @@
 {
-  "name": "@coderbyheart/bdd-feature-runner-aws",
+  "name": "@bifravst/e2e-bdd-test-runner",
   "version": "0.0.0-development",
-  "description": "BDD Test Runner for cloud native applications made with AWS",
+  "description": "Implementation of a test-runner for end-to-end tests of cloud-native applications using Gherkin features.",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
   "scripts": {
@@ -14,7 +14,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/coderbyheart/bdd-feature-runner-aws.git"
+    "url": "https://github.com/bifravst/e2e-bdd-test-runner.git"
   },
   "keywords": [
     "BDD",
@@ -27,9 +27,9 @@
   "author": "Nordic Semiconductor ASA | nordicsemi.no",
   "license": "BSD-3-Clause",
   "bugs": {
-    "url": "https://github.com/coderbyheart/bdd-feature-runner-aws/issues"
+    "url": "https://github.com/bifravst/e2e-bdd-test-runner/issues"
   },
-  "homepage": "https://github.com/coderbyheart/bdd-feature-runner-aws#readme",
+  "homepage": "https://github.com/bifravst/e2e-bdd-test-runner#readme",
   "dependencies": {
     "@types/backoff": "^2.5.1",
     "@types/chai": "^4.2.11",
