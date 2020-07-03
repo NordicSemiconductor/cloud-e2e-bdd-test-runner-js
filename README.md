@@ -26,6 +26,34 @@ Other projects using this project for testing:
 
 ## Motivation
 
+Building cloud-native solutions means leveraging the power of highly scalable,
+often proprietary components, which can no longer be run locally on the
+developer's machine. A critical part of the solution is also the configuration
+which ties these components together.
+
+End-to-end testing provides a way to ensure that the entire solution is working
+properly and that changes not only in code and dependencies but also on the
+provider side are catched immediately.
+
+This project is an implementation of a test-runner in TypeScript that allows
+every change to a cloud-native project to be tested tested against production
+infrastructure using a BDD style test-suite of end-to-end tests written in
+[Gherkin](https://cucumber.io/docs/gherkin/), which describe tests in plain
+english.
+
+This way the tests itself are not tied to the implementation and during
+refactoring one cannot accidentally drop tests: tests written for test runners
+like Jest tend to be tied closely to the API of the source-code implementation,
+in a case of bigger refactoring the tests themselves usually need to be
+refactored as well. Since the end-to-end tests are purely testing based on the
+public API of the project, they can be kept unchanged during refactoring.
+
+This also provides an easily grokable description of the working and implemented
+projects features in one folder
+([example](https://github.com/bifravst/aws/tree/saga/features)).
+
+Below is a talk in English explaining this approach in detail:
+
 [Video](https://youtu.be/yt7oJ-To4kI) ·
 [Slides](https://coderbyheart.com/it-does-not-run-on-my-machine/)
 
