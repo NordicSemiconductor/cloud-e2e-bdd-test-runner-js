@@ -44,7 +44,7 @@
     "fetch-ponyfill": "^6.1.1",
     "gherkin": "^9.0.0",
     "glob": "^7.1.6",
-    "graphql": "^15.2.0",
+    "graphql": "^15.3.0",
     "jsonata": "^1.8.3",
     "node-fetch": "^2.6.0",
     "paho-mqtt": "^1.1.0",
