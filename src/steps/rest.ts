@@ -1,4 +1,5 @@
 import * as jsonata from 'jsonata'
+import * as chai from 'chai'
 import { RestClient } from '../lib/rest-client'
 import { expect } from 'chai'
 import { regexMatcher } from '../lib/regexMatcher'
