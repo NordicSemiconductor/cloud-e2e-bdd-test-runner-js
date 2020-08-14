@@ -3,6 +3,9 @@ import { RestClient } from '../lib/rest-client'
 import { expect } from 'chai'
 import { regexMatcher } from '../lib/regexMatcher'
 import { InterpolatedStep, StepRunnerFunc, Store } from '../lib/runner'
+import * as chaiSubset from 'chai-subset'
+
+chai.use(chaiSubset)
 
 export const restStepRunners = (
 	{ client }: { client: RestClient } = { client: new RestClient() },
@@ -41,14 +44,20 @@ export const restStepRunners = (
 			return client.response.headers[name.toLowerCase()]
 		},
 	),
-	regexMatcher(/^the response should equal this JSON$/)(async (_, step) => {
-		if (step.interpolatedArgument === undefined) {
-			throw new Error('Must provide argument!')
-		}
-		const j = JSON.parse(step.interpolatedArgument)
-		expect(client.response.body).to.deep.equal(j)
-		return client.response.body
-	}),
+	regexMatcher(/^the response should (equal|match) this JSON$/)(
+		async ([equalOrMatch], step) => {
+			if (step.interpolatedArgument === undefined) {
+				throw new Error('Must provide argument!')
+			}
+			const j = JSON.parse(step.interpolatedArgument)
+			if (equalOrMatch === 'match') {
+				expect(client.response.body).to.containSubset(j)
+			} else {
+				expect(client.response.body).to.deep.equal(j)
+			}
+			return client.response.body
+		},
+	),
 	regexMatcher(/^"([^"]+)" of the response body is not empty$/)(
 		async ([exp]) => {
 			const e = jsonata(exp)
@@ -73,18 +82,22 @@ export const restStepRunners = (
 			return v
 		},
 	),
-	regexMatcher(/^"([^"]+)" of the response body should equal this JSON$/)(
-		async ([exp], step) => {
-			if (step.interpolatedArgument === undefined) {
-				throw new Error('Must provide argument!')
-			}
-			const j = JSON.parse(step.interpolatedArgument)
-			const e = jsonata(exp)
-			const v = e.evaluate(client.response.body)
+	regexMatcher(
+		/^"([^"]+)" of the response body should (equal|match) this JSON$/,
+	)(async ([exp, equalOrMatch], step) => {
+		if (step.interpolatedArgument === undefined) {
+			throw new Error('Must provide argument!')
+		}
+		const j = JSON.parse(step.interpolatedArgument)
+		const e = jsonata(exp)
+		const v = e.evaluate(client.response.body)
+		if (equalOrMatch === 'match') {
+			expect(v).to.containSubset(j)
+		} else {
 			expect(v).to.deep.equal(j)
-			return v
-		},
-	),
+		}
+		return v
+	}),
 	regexMatcher(/^I (POST|PUT|PATCH) (?:to )?([^ ]+) with this JSON$/)(
 		async ([method, path], step) => {
 			if (step.interpolatedArgument === undefined) {
