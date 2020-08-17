@@ -99,13 +99,19 @@ export const restStepRunners = (
 		}
 		return v
 	}),
-	regexMatcher(/^I (POST|PUT|PATCH) (?:to )?([^ ]+) with this JSON$/)(
-		async ([method, path], step) => {
+	regexMatcher(/^I (POST|PUT|PATCH) (?:to )?([^ ]+) with this (JSON|payload)$/)(
+		async ([method, path, jsonOrPayload], step) => {
 			if (step.interpolatedArgument === undefined) {
 				throw new Error('Must provide argument!')
 			}
-			const j = JSON.parse(step.interpolatedArgument)
-			return [await client.request(method, path, undefined, undefined, j), j]
+			const payload =
+				jsonOrPayload === 'JSON'
+					? JSON.parse(step.interpolatedArgument)
+					: step.interpolatedArgument
+			return [
+				await client.request(method, path, undefined, undefined, payload),
+				payload,
+			]
 		},
 	),
 	regexMatcher(
