@@ -59,6 +59,15 @@ export const restStepRunners = (
 			return client.response.body
 		},
 	),
+	regexMatcher(/^the response (?:body )should equal this payload$/)(
+		async (_, step) => {
+			if (step.interpolatedArgument === undefined) {
+				throw new Error('Must provide argument!')
+			}
+			expect(client.response.body).to.equal(step.interpolatedArgument.trim())
+			return client.response.body
+		},
+	),
 	regexMatcher(/^"([^"]+)" of the response body is not empty$/)(
 		async ([exp]) => {
 			const e = jsonata(exp)
