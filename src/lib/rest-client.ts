@@ -42,10 +42,12 @@ export class RestClient {
 			...this.headers,
 			...extraHeaders,
 		}
-		const url = `${this.endpoint.replace(/\/+$/, '')}/${path.replace(
-			/^\/+/,
-			'',
-		)}${toQueryString(queryString ?? {})}`
+		const url = path.startsWith('http')
+			? path
+			: `${this.endpoint.replace(/\/+$/, '')}/${path.replace(
+					/^\/+/,
+					'',
+			  )}${toQueryString(queryString ?? {})}`
 		const res = await fetch(url, {
 			method,
 			headers,
