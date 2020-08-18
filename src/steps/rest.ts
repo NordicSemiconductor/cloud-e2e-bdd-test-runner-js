@@ -83,6 +83,14 @@ export const restStepRunners = (
 			return v
 		},
 	),
+	regexMatcher(/^"([^"]+)" of the response body should be (true|false)$/)(
+		async ([exp, trueOrFalse]) => {
+			const e = jsonata(exp)
+			const v = e.evaluate(client.response.body)
+			expect(v).to.equal(trueOrFalse === 'true')
+			return v
+		},
+	),
 	regexMatcher(
 		/^"([^"]+)" of the response body should (equal|match) this JSON$/,
 	)(async ([exp, equalOrMatch], step) => {
