@@ -7,9 +7,22 @@ import { InterpolatedStep, StepRunnerFunc, Store } from '../lib/runner'
 
 chai.use(chaiSubset)
 
-export const storageStepRunners = (): ((
-	step: InterpolatedStep,
-) => false | StepRunnerFunc<Store>)[] => [
+export const storageStepRunners = (
+	{
+		encoders,
+		decoders,
+	}: {
+		encoders: Record<string, (v: string) => string>
+		decoders: Record<string, (v: string) => string>
+	} = {
+		encoders: {
+			base64: (s: string): string => Buffer.from(s).toString('base64'),
+		},
+		decoders: {
+			base64: (s: string): string => Buffer.from(s, 'base64').toString('ascii'),
+		},
+	},
+): ((step: InterpolatedStep) => false | StepRunnerFunc<Store>)[] => [
 	regexGroupMatcher(
 		/^"(?<exp>[^"]+)" should (?<equalOrMatch>(?:equal|be)|match) (?:(?<jsonMatch>this JSON)|"(?<stringMatch>[^"]+)"|(?<numMatch>[0-9]+)|(?<boolMatch>true|false))$/,
 	)(
@@ -70,4 +83,15 @@ export const storageStepRunners = (): ((
 			return result
 		},
 	),
+	regexGroupMatcher(
+		/^I (?<encodeOrDecode>encode|decode) this payload into "(?<storeName>[^"]+)" using (?<encoding>[a-z0-9]+)$/,
+	)(async ({ encodeOrDecode, storeName, encoding }, step, runner) => {
+		if (step.interpolatedArgument === undefined) {
+			throw new Error('Must provide argument!')
+		}
+		const encoder =
+			encodeOrDecode === 'encode' ? encoders[encoding] : decoders[encoding]
+		runner.store[storeName] = encoder(step.interpolatedArgument)
+		return [step.interpolatedArgument, runner.store[storeName]]
+	}),
 ]
