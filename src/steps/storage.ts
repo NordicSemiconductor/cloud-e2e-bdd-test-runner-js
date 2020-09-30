@@ -18,6 +18,7 @@ export const storageStepRunners = (
 		encoders: {
 			base64: (s: string): string => Buffer.from(s).toString('base64'),
 			JSON: (s: any): string => JSON.stringify(JSON.stringify(JSON.parse(s))),
+			replaceNewLines: (s: string): string => s.replace(/\n/g, '\\n'),
 			querystring: (s: Record<string, any>): string =>
 				Object.entries(s)
 					.map(([k, v]) => `${encodeURIComponent(k)}=${encodeURIComponent(v)}`)
