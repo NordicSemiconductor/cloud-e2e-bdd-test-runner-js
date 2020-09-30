@@ -12,11 +12,16 @@ export const storageStepRunners = (
 		encoders,
 		decoders,
 	}: {
-		encoders: Record<string, (v: string) => string>
-		decoders: Record<string, (v: string) => string>
+		encoders: Record<string, (v: any) => string>
+		decoders: Record<string, (v: any) => string>
 	} = {
 		encoders: {
 			base64: (s: string): string => Buffer.from(s).toString('base64'),
+			JSON: (s: any): string => JSON.stringify(JSON.stringify(JSON.parse(s))),
+			querystring: (s: Record<string, any>): string =>
+				Object.entries(s)
+					.map(([k, v]) => `${encodeURIComponent(k)}=${encodeURIComponent(v)}`)
+					.join('&'),
 		},
 		decoders: {
 			base64: (s: string): string => Buffer.from(s, 'base64').toString('ascii'),
@@ -55,16 +60,6 @@ export const storageStepRunners = (
 			return [fragment]
 		},
 	),
-	regexGroupMatcher(/^I escape this JSON into "(?<storeName>[^"]+)"$/)(
-		async ({ storeName }, step, runner) => {
-			if (step.interpolatedArgument === undefined) {
-				throw new Error('Must provide argument!')
-			}
-			const j = JSON.parse(step.interpolatedArgument)
-			runner.store[storeName] = JSON.stringify(JSON.stringify(j))
-			return runner.store[storeName]
-		},
-	),
 	regexGroupMatcher(/^I parse "(?<exp>[^"]+)" into "(?<storeName>[^"]+)"$/)(
 		async ({ exp, storeName }, _, runner) => {
 			const e = jsonata(exp)
@@ -84,14 +79,21 @@ export const storageStepRunners = (
 		},
 	),
 	regexGroupMatcher(
-		/^I (?<encodeOrDecode>encode|decode) this payload into "(?<storeName>[^"]+)" using (?<encoding>[a-z0-9]+)$/,
-	)(async ({ encodeOrDecode, storeName, encoding }, step, runner) => {
-		if (step.interpolatedArgument === undefined) {
-			throw new Error('Must provide argument!')
+		/^I (?<encodeOrDecode>encode|decode) (?:"(?<exp>[^"]+)"|this payload) into "(?<storeName>[^"]+)" using (?<encoding>[a-zA-Z0-9]+)$/,
+	)(async ({ encodeOrDecode, exp, storeName, encoding }, step, runner) => {
+		let data
+		if (exp === undefined) {
+			if (step.interpolatedArgument === undefined)
+				throw new Error('Must provide argument!')
+			data = step.interpolatedArgument
+		} else {
+			const e = jsonata(exp)
+			data = e.evaluate(runner.store)
 		}
+		expect(data).to.not.be.an('undefined')
 		const encoder =
 			encodeOrDecode === 'encode' ? encoders[encoding] : decoders[encoding]
-		runner.store[storeName] = encoder(step.interpolatedArgument)
+		runner.store[storeName] = encoder(data)
 		return [step.interpolatedArgument, runner.store[storeName]]
 	}),
 ]

@@ -15,3 +15,9 @@ Feature: Encoding and decoding base64
       U29tZSBzdHJpbmc=
       """
     Then "decodedBase64" should equal "Some string"
+
+  Scenario: Encode string using base64 from storage
+
+    Given I store "'foo'" into "fooValue"
+    When I encode "fooValue" into "encodedFooValue" using base64
+    Then "encodedFooValue" should equal "Zm9v"

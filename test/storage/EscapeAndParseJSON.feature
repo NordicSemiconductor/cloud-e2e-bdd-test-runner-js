@@ -2,11 +2,11 @@ Feature: Escaping and parsing JSON
 
   Scenario: Escape a JSON string (double JSON.stringify)
 
-    When I escape this JSON into "escapedJSON"
+    When I encode this payload into "escapedJSON" using JSON
       """
       {"baz":"foo","num":42,"b":true}
       """
-
+  
   Scenario: Parsing a JSON string
 
     When I parse "escapedJSON" into "jsonString"
