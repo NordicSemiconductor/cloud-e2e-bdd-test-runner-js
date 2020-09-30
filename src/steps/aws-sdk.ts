@@ -26,7 +26,7 @@ export const awsSdkStepRunners = ({
 }): ((step: InterpolatedStep) => false | StepRunnerFunc<Store>)[] => [
 	regexMatcher(/^I execute "([^"]+)" of the AWS ([^ ]+) SDK( with)?$/)(
 		async ([method, api, withArgs], step, runner, flightRecorder) => {
-			let argument
+			let argument: any
 			if (withArgs) {
 				if (step.interpolatedArgument === undefined) {
 					throw new Error('Must provide argument!')
@@ -89,7 +89,12 @@ export const awsSdkStepRunners = ({
 				`AWS-SDK.${api}`,
 				`${method}(${argument !== undefined ? JSON.stringify(argument) : ''})`,
 			)
-			const res = await a[method](argument).promise()
+			const res = await new Promise((resolve, reject) => {
+				a[method](argument, (err: Error, res: any) => {
+					if (err !== undefined && err !== null) return reject(err)
+					resolve(res)
+				})
+			})
 			runner.store.awsSdk = {
 				res,
 			}
