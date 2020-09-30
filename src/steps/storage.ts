@@ -94,7 +94,12 @@ export const storageStepRunners = (
 		expect(data).to.not.be.an('undefined')
 		const encoder =
 			encodeOrDecode === 'encode' ? encoders[encoding] : decoders[encoding]
-		runner.store[storeName] = encoder(data)
-		return [step.interpolatedArgument, runner.store[storeName]]
+		try {
+			runner.store[storeName] = encoder(data)
+		} catch (err) {
+			console.error(data)
+			throw new Error(`Encoding using ${encoding} failed: ${err.message}!`)
+		}
+		return [data, runner.store[storeName]]
 	}),
 ]
