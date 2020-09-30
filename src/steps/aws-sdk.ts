@@ -2,6 +2,13 @@ import * as AWS from 'aws-sdk'
 import { regexMatcher } from '../lib/regexMatcher'
 import * as cognito from './cognito'
 import { InterpolatedStep, StepRunnerFunc, Store } from '../lib/runner'
+import { regexGroupMatcher } from '../lib/regexGroupMatcher'
+
+export const accessKeyAuthentication = 'accessKeyAuthentication'
+export type AWSSDKFlightRecorderSettings = {
+	accessKeyId: string
+	secretAccessKey: string
+}
 
 /**
  * BDD steps for using the AWS SDK directly
@@ -34,6 +41,7 @@ export const awsSdkStepRunners = ({
 			}
 			let extraArgs = {} as any
 			const cognitoEnabled = flightRecorder.flags[cognito.cognitoAuthentication]
+			const accessKeyAuth = flightRecorder.flags[accessKeyAuthentication]
 			if (cognitoEnabled) {
 				const {
 					secretAccessKey,
@@ -42,7 +50,7 @@ export const awsSdkStepRunners = ({
 					sessionToken,
 				} = flightRecorder.settings[
 					cognito.cognitoAuthentication
-				] as cognito.FlightRecorderSettings
+				] as cognito.CognitoFlightRecorderSettings
 				extraArgs = {
 					credentials: {
 						secretAccessKey,
@@ -54,6 +62,20 @@ export const awsSdkStepRunners = ({
 				await runner.progress(
 					`AWS-SDK.${api}.auth`,
 					extraArgs.credentials.identityId,
+				)
+			} else if (accessKeyAuth) {
+				const { secretAccessKey, accessKeyId } = flightRecorder.settings[
+					accessKeyAuthentication
+				] as AWSSDKFlightRecorderSettings
+				extraArgs = {
+					credentials: {
+						secretAccessKey,
+						accessKeyId,
+					},
+				}
+				await runner.progress(
+					`AWS-SDK.${api}.auth`,
+					extraArgs.credentials.accessKeyId,
 				)
 			}
 			const args = {
@@ -74,4 +96,13 @@ export const awsSdkStepRunners = ({
 			return res
 		},
 	),
+	regexGroupMatcher(
+		/^I am authenticated with AWS key "(?<accessKeyId>[^"]+)" and secret "(?<secretAccessKey>[^"]+)"$/,
+	)(async ({ accessKeyId, secretAccessKey }, _, __, { flags, settings }) => {
+		flags[accessKeyAuthentication] = true
+		settings[accessKeyAuthentication] = {
+			accessKeyId,
+			secretAccessKey,
+		}
+	}),
 ]

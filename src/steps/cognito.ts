@@ -15,7 +15,7 @@ export type CognitoStepRunnerWorld = Store & {
 }
 
 export const cognitoAuthentication = 'cognitoAuthentication'
-export type FlightRecorderSettings = {
+export type CognitoFlightRecorderSettings = {
 	userId: string
 	accessKeyId: string
 	identityId: string
