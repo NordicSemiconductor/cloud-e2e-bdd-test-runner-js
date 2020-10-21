@@ -80,6 +80,7 @@ export class RestClient {
 			},
 		})
 		const res = await fetch(url, options)
+		const statusCode: number = res.status
 		const h: Headers = {}
 		res.headers.forEach((v: string, k: string) => {
 			h[k] = v
@@ -90,13 +91,13 @@ export class RestClient {
 			const errorMessage = `The content-type "${contentType}" of the response does not match accepted media-type ${headers.Accept}`
 			this.errorLog?.(requestId, {
 				error: errorMessage,
+				statusCode,
 				headers: h,
 				body: await res.text(),
 			})
 			throw new Error(errorMessage)
 		}
 
-		const statusCode: number = res.status
 		const contentLength: number = +(res.headers.get('content-length') ?? 0)
 
 		if (
@@ -106,6 +107,7 @@ export class RestClient {
 			const errorMessage = `The content-type "${contentType}" of the response is not JSON!`
 			this.errorLog?.(requestId, {
 				error: errorMessage,
+				statusCode,
 				headers: h,
 				body: await res.text(),
 			})
