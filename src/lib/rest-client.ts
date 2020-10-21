@@ -30,10 +30,18 @@ export class RestClient {
 		body: '',
 	}
 
-	debug
+	debugLog
+	errorLog
 
-	constructor({ debug }: { debug?: (...args: any) => void } = {}) {
-		this.debug = debug
+	constructor({
+		debugLog,
+		errorLog,
+	}: {
+		debugLog?: (...args: any) => void
+		errorLog?: (...args: any) => void
+	} = {}) {
+		this.debugLog = debugLog
+		this.errorLog = errorLog
 	}
 
 	async request(
@@ -53,7 +61,7 @@ export class RestClient {
 					/^\/+/,
 					'',
 			  )}${toQueryString(queryString ?? {})}`
-		const res = await fetch(url, {
+		const options = {
 			method,
 			headers,
 			body:
@@ -62,17 +70,18 @@ export class RestClient {
 						? JSON.stringify(body)
 						: body
 					: undefined,
-		})
+		}
+		const res = await fetch(url, options)
 		const contentType: string = res.headers.get('content-type') ?? '',
 			mediaType: string = contentType.split(';')[0]
 		if (!headers.Accept.includes(mediaType)) {
-			this.debug?.(
-				`[REST]`,
-				JSON.stringify({ headers, body: await res.text() }),
-			)
-			throw new Error(
-				`The content-type "${contentType}" of the response does not match accepted media-type ${headers.Accept}`,
-			)
+			const errorMessage = `The content-type "${contentType}" of the response does not match accepted media-type ${headers.Accept}`
+			this.errorLog?.({
+				error: errorMessage,
+				headers,
+				body: await res.text(),
+			})
+			throw new Error(errorMessage)
 		}
 
 		const statusCode: number = res.status
@@ -86,13 +95,9 @@ export class RestClient {
 			contentLength > 0 &&
 			/^application\/([^ /]+\+)?json$/.test(mediaType) === false
 		) {
-			this.debug?.(
-				`[REST]`,
-				JSON.stringify({ headers, body: await res.text() }),
-			)
-			throw new Error(
-				`The content-type "${contentType}" of the response is not JSON!`,
-			)
+			const errorMessage = `The content-type "${contentType}" of the response is not JSON!`
+			this.errorLog?.({ error: errorMessage, headers, body: await res.text() })
+			throw new Error(errorMessage)
 		}
 
 		this.response = {
@@ -100,6 +105,15 @@ export class RestClient {
 			headers: h,
 			body: contentLength ? await res.json() : undefined,
 		}
+		this.debugLog?.({
+			request: {
+				url,
+				options,
+			},
+			response: {
+				...this.response,
+			},
+		})
 		return url
 	}
 }
