@@ -2,7 +2,6 @@ name: Test and Release
 
 on:
   - push
-  - pull_request
 
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
