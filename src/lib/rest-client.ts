@@ -1,5 +1,6 @@
 import * as querystring from 'querystring'
 import * as fetchPonyfill from 'fetch-ponyfill'
+import { v4 } from 'uuid'
 
 const { fetch } = fetchPonyfill()
 
@@ -37,8 +38,8 @@ export class RestClient {
 		debugLog,
 		errorLog,
 	}: {
-		debugLog?: (...args: any) => void
-		errorLog?: (...args: any) => void
+		debugLog?: (requestId: string, ...args: any) => void
+		errorLog?: (requestId: string, ...args: any) => void
 	} = {}) {
 		this.debugLog = debugLog
 		this.errorLog = errorLog
@@ -51,6 +52,7 @@ export class RestClient {
 		extraHeaders?: Headers,
 		body?: unknown,
 	): Promise<string> {
+		const requestId = v4()
 		const headers: Headers = {
 			...this.headers,
 			...extraHeaders,
@@ -71,14 +73,24 @@ export class RestClient {
 						: body
 					: undefined,
 		}
+		this.debugLog?.(requestId, {
+			request: {
+				url,
+				options,
+			},
+		})
 		const res = await fetch(url, options)
+		const h: Headers = {}
+		res.headers.forEach((v: string, k: string) => {
+			h[k] = v
+		})
 		const contentType: string = res.headers.get('content-type') ?? '',
 			mediaType: string = contentType.split(';')[0]
 		if (!headers.Accept.includes(mediaType)) {
 			const errorMessage = `The content-type "${contentType}" of the response does not match accepted media-type ${headers.Accept}`
-			this.errorLog?.({
+			this.errorLog?.(requestId, {
 				error: errorMessage,
-				headers,
+				headers: h,
 				body: await res.text(),
 			})
 			throw new Error(errorMessage)
@@ -86,17 +98,17 @@ export class RestClient {
 
 		const statusCode: number = res.status
 		const contentLength: number = +(res.headers.get('content-length') ?? 0)
-		const h: Headers = {}
-		res.headers.forEach((v: string, k: string) => {
-			h[k] = v
-		})
 
 		if (
 			contentLength > 0 &&
 			/^application\/([^ /]+\+)?json$/.test(mediaType) === false
 		) {
 			const errorMessage = `The content-type "${contentType}" of the response is not JSON!`
-			this.errorLog?.({ error: errorMessage, headers, body: await res.text() })
+			this.errorLog?.(requestId, {
+				error: errorMessage,
+				headers: h,
+				body: await res.text(),
+			})
 			throw new Error(errorMessage)
 		}
 
@@ -105,11 +117,7 @@ export class RestClient {
 			headers: h,
 			body: contentLength ? await res.json() : undefined,
 		}
-		this.debugLog?.({
-			request: {
-				url,
-				options,
-			},
+		this.debugLog?.(requestId, {
 			response: {
 				...this.response,
 			},
