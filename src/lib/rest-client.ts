@@ -32,7 +32,7 @@ export class RestClient {
 
 	debug
 
-	constructor({ debug }: { debug?: (...args: any) => void }) {
+	constructor({ debug }: { debug?: (...args: any) => void } = {}) {
 		this.debug = debug
 	}
 
