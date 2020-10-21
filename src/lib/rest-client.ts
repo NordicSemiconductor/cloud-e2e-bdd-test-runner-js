@@ -1,5 +1,6 @@
 import * as querystring from 'querystring'
 import * as fetchPonyfill from 'fetch-ponyfill'
+import { v4 } from 'uuid'
 
 const { fetch } = fetchPonyfill()
 
@@ -30,14 +31,28 @@ export class RestClient {
 		body: '',
 	}
 
+	debugLog
+	errorLog
+
+	constructor({
+		debugLog,
+		errorLog,
+	}: {
+		debugLog?: (requestId: string, ...args: any) => void
+		errorLog?: (requestId: string, ...args: any) => void
+	} = {}) {
+		this.debugLog = debugLog
+		this.errorLog = errorLog
+	}
+
 	async request(
 		method: string,
 		path: string,
 		queryString?: { [key: string]: string },
 		extraHeaders?: Headers,
 		body?: unknown,
-		debug?: (...args: any) => void,
 	): Promise<string> {
+		const requestId = v4()
 		const headers: Headers = {
 			...this.headers,
 			...extraHeaders,
@@ -48,7 +63,7 @@ export class RestClient {
 					/^\/+/,
 					'',
 			  )}${toQueryString(queryString ?? {})}`
-		const res = await fetch(url, {
+		const options = {
 			method,
 			headers,
 			body:
@@ -57,33 +72,46 @@ export class RestClient {
 						? JSON.stringify(body)
 						: body
 					: undefined,
-		})
-		const contentType: string = res.headers.get('content-type') ?? '',
-			mediaType: string = contentType.split(';')[0]
-		if (!headers.Accept.includes(mediaType)) {
-			if (debug !== undefined)
-				debug(`[REST]`, JSON.stringify({ headers, body: await res.text() }))
-			throw new Error(
-				`The content-type "${contentType}" of the response does not match accepted media-type ${headers.Accept}`,
-			)
 		}
-
+		this.debugLog?.(requestId, {
+			request: {
+				url,
+				options,
+			},
+		})
+		const res = await fetch(url, options)
 		const statusCode: number = res.status
-		const contentLength: number = +(res.headers.get('content-length') ?? 0)
 		const h: Headers = {}
 		res.headers.forEach((v: string, k: string) => {
 			h[k] = v
 		})
+		const contentType: string = res.headers.get('content-type') ?? '',
+			mediaType: string = contentType.split(';')[0]
+		if (!headers.Accept.includes(mediaType)) {
+			const errorMessage = `The content-type "${contentType}" of the response does not match accepted media-type ${headers.Accept}`
+			this.errorLog?.(requestId, {
+				error: errorMessage,
+				statusCode,
+				headers: h,
+				body: await res.text(),
+			})
+			throw new Error(errorMessage)
+		}
+
+		const contentLength: number = +(res.headers.get('content-length') ?? 0)
 
 		if (
 			contentLength > 0 &&
 			/^application\/([^ /]+\+)?json$/.test(mediaType) === false
 		) {
-			if (debug !== undefined)
-				debug(`[REST]`, JSON.stringify({ headers, body: await res.text() }))
-			throw new Error(
-				`The content-type "${contentType}" of the response is not JSON!`,
-			)
+			const errorMessage = `The content-type "${contentType}" of the response is not JSON!`
+			this.errorLog?.(requestId, {
+				error: errorMessage,
+				statusCode,
+				headers: h,
+				body: await res.text(),
+			})
+			throw new Error(errorMessage)
 		}
 
 		this.response = {
@@ -91,6 +119,11 @@ export class RestClient {
 			headers: h,
 			body: contentLength ? await res.json() : undefined,
 		}
+		this.debugLog?.(requestId, {
+			response: {
+				...this.response,
+			},
+		})
 		return url
 	}
 }
