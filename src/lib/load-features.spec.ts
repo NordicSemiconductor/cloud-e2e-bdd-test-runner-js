@@ -55,6 +55,17 @@ describe('load-features', () => {
 		})
 	})
 
+	describe('@Skip', () => {
+		test('should run only specific features', async () => {
+			const features = await fromDirectory(
+				path.join(process.cwd(), 'test', '@Skip'),
+			)
+			expect(
+				features.filter(({ skip }) => !skip).map(({ name }) => name),
+			).toEqual(['Only'])
+		})
+	})
+
 	it('should fail if no feature are found in the directory', () => {
 		void expect(
 			fromDirectory(path.join(process.cwd(), 'test', 'foo')),

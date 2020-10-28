@@ -101,7 +101,7 @@ export const parseFeatures = (featureData: Buffer[]): SkippableFeature[] => {
 	return sortedFeatures.map((f) => {
 		const { tags, name: featureName } = f
 		const skip =
-			(tags ?? []).find(({ name }) => name === '@Skip') ||
+			(tags ?? []).filter(({ name }) => name === '@Skip').length > 0 ||
 			(onlyNames.length && !onlyNames.includes(featureName))
 
 		return {
