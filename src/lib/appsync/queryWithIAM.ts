@@ -1,24 +1,35 @@
-import * as AWS from 'aws-sdk'
-import { Credentials, Endpoint, HttpRequest } from 'aws-sdk'
+import { SignatureV4 } from '@aws-sdk/signature-v4'
+import { Credentials, Endpoint } from '@aws-sdk/types'
+import { HttpRequest } from '@aws-sdk/protocol-http'
 import fetch from 'node-fetch'
 import { parse } from 'url'
 import { parseQuery } from './parseQuery'
 import { GQLQueryResult } from '../gql-query-result'
 
 export const queryWithIAM = (
-	AccessKeyId: string,
-	SecretKey: string,
-	SessionToken: string,
+	accessKeyId: string,
+	secretAccessKey: string,
+	sessionToken: string,
 	endpoint: string,
 ) => async (
 	gqlQuery: string,
 	variables?: { [key: string]: string },
 ): Promise<GQLQueryResult> => {
-	const credentials = new Credentials(AccessKeyId, SecretKey, SessionToken)
+	const credentials: Credentials = {
+		accessKeyId,
+		secretAccessKey,
+		sessionToken,
+	}
 	const { selection, operation } = parseQuery(gqlQuery)
 	const graphQLEndpoint = parse(endpoint)
 	const region = graphQLEndpoint.host!.split('.')[2]
-	const httpRequest = new HttpRequest(new Endpoint(endpoint), region)
+	const httpRequest = new HttpRequest(
+		((p: ReturnType<typeof parse>): Endpoint =>
+			({
+				...p,
+				port: p.port !== null ? parseInt(p.port, 10) : undefined,
+			} as Endpoint))(parse(endpoint)),
+	)
 	const query = {
 		query: gqlQuery,
 		variables,
@@ -32,7 +43,7 @@ export const queryWithIAM = (
 	httpRequest.body = JSON.stringify(query)
 
 	// @ts-ignore Signers is not a public API
-	const signer = new AWS.Signers.V4(httpRequest, 'appsync', true)
+	const signer = new SignatureV4(httpRequest, 'appsync', true)
 	// @ts-ignore AWS.util is not a public API
 	signer.addAuthorization(credentials, new Date())
 

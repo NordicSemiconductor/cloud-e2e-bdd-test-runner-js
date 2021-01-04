@@ -1,6 +1,16 @@
 import { Store, InterpolatedStep, StepRunnerFunc } from '../lib/runner'
 import { regexMatcher } from '../lib/regexMatcher'
-import { CognitoIdentity, CognitoIdentityServiceProvider } from 'aws-sdk'
+import {
+	CognitoIdentityClient,
+	GetCredentialsForIdentityCommand,
+	GetOpenIdTokenForDeveloperIdentityCommand,
+} from '@aws-sdk/client-cognito-identity'
+import {
+	AdminCreateUserCommand,
+	AdminInitiateAuthCommand,
+	AdminRespondToAuthChallengeCommand,
+	CognitoIdentityProviderClient,
+} from '@aws-sdk/client-cognito-identity-provider'
 
 const randSeq = () =>
 	Math.random()
@@ -35,10 +45,10 @@ export const cognitoStepRunners = <W extends CognitoStepRunnerWorld>({
 	region: string
 	emailAsUsername?: boolean
 }): ((step: InterpolatedStep) => false | StepRunnerFunc<W>)[] => {
-	const ci = new CognitoIdentity({
+	const ci = new CognitoIdentityClient({
 		region,
 	})
-	const cisp = new CognitoIdentityServiceProvider({
+	const cisp = new CognitoIdentityProviderClient({
 		region,
 	})
 	return [
@@ -55,8 +65,8 @@ export const cognitoStepRunners = <W extends CognitoStepRunnerWorld>({
 						`Registering user ${cognitoUsername}`,
 					)
 					const TemporaryPassword = `${randSeq()}${randSeq().toUpperCase()}${Math.random()}`
-					await cisp
-						.adminCreateUser({
+					await cisp.send(
+						new AdminCreateUserCommand({
 							UserPoolId: runner.world.userPoolId,
 							Username: cognitoUsername,
 							UserAttributes: [
@@ -70,12 +80,12 @@ export const cognitoStepRunners = <W extends CognitoStepRunnerWorld>({
 								},
 							],
 							TemporaryPassword,
-						})
-						.promise()
+						}),
+					)
 
 					const newPassword = `${randSeq()}${randSeq().toUpperCase()}${Math.random()}`
-					const { Session } = await cisp
-						.adminInitiateAuth({
+					const { Session } = await cisp.send(
+						new AdminInitiateAuthCommand({
 							AuthFlow: 'ADMIN_NO_SRP_AUTH',
 							UserPoolId: runner.world.userPoolId,
 							ClientId: runner.world.userPoolClientId,
@@ -83,11 +93,10 @@ export const cognitoStepRunners = <W extends CognitoStepRunnerWorld>({
 								USERNAME: cognitoUsername,
 								PASSWORD: TemporaryPassword,
 							},
-						})
-						.promise()
-
-					const { AuthenticationResult } = await cisp
-						.adminRespondToAuthChallenge({
+						}),
+					)
+					const { AuthenticationResult } = await cisp.send(
+						new AdminRespondToAuthChallengeCommand({
 							ChallengeName: 'NEW_PASSWORD_REQUIRED',
 							UserPoolId: runner.world.userPoolId,
 							ClientId: runner.world.userPoolClientId,
@@ -96,32 +105,32 @@ export const cognitoStepRunners = <W extends CognitoStepRunnerWorld>({
 								USERNAME: cognitoUsername,
 								NEW_PASSWORD: newPassword,
 							},
-						})
-						.promise()
+						}),
+					)
 
 					runner.store[`${prefix}:IdToken`] = AuthenticationResult!.IdToken
 
 					runner.store[`${prefix}:Username`] = cognitoUsername
 					runner.store[userId ? `${userId}:Email` : 'Email'] = email
 
-					const { IdentityId, Token } = await ci
-						.getOpenIdTokenForDeveloperIdentity({
+					const { IdentityId, Token } = await ci.send(
+						new GetOpenIdTokenForDeveloperIdentityCommand({
 							IdentityPoolId: runner.world.identityPoolId,
 							Logins: {
 								[developerProviderName]: runner.store[`${prefix}:Username`],
 							},
 							TokenDuration: 3600,
-						})
-						.promise()
+						}),
+					)
 
-					const { Credentials } = await ci
-						.getCredentialsForIdentity({
+					const { Credentials } = await ci.send(
+						new GetCredentialsForIdentityCommand({
 							IdentityId: IdentityId!,
 							Logins: {
 								['cognito-identity.amazonaws.com']: Token!,
 							},
-						})
-						.promise()
+						}),
+					)
 
 					runner.store[`${prefix}:IdentityId`] = IdentityId
 					runner.store[`${prefix}:Token`] = Token
