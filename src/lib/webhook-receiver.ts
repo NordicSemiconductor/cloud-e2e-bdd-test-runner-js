@@ -18,9 +18,9 @@ export class WebhookReceiver {
 	private readonly sqs: SQSClient
 	latestWebhookRequest?: WebhookRequest
 
-	constructor(queueUrl: string, region: string) {
+	constructor({ queueUrl }: { queueUrl: string }) {
 		this.queueUrl = queueUrl
-		this.sqs = new SQSClient({ region })
+		this.sqs = new SQSClient({})
 	}
 
 	/**

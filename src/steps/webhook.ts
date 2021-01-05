@@ -10,10 +10,8 @@ import { StepRunnerFunc, Store, InterpolatedStep } from '../lib/runner'
 chai.use(chaiSubset)
 
 export const webhookStepRunners = ({
-	region,
 	webhookQueue,
 }: {
-	region: string
 	webhookQueue: string
 }): ((step: InterpolatedStep) => false | StepRunnerFunc<Store>)[] => {
 	let r: WebhookReceiver
@@ -51,7 +49,7 @@ export const webhookStepRunners = ({
 			},
 		),
 		regexMatcher(/^I have a Webhook Receiver/)(async () => {
-			r = new WebhookReceiver(webhookQueue, region)
+			r = new WebhookReceiver({ queueUrl: webhookQueue })
 			await r.clearQueue()
 		}),
 		regexGroupMatcher(

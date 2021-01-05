@@ -21,7 +21,6 @@ export type CognitoStepRunnerWorld = Store & {
 	userPoolId: string
 	identityPoolId: string
 	userPoolClientId: string
-	region: string
 }
 
 export const cognitoAuthentication = 'cognitoAuthentication'
@@ -37,20 +36,14 @@ export type CognitoFlightRecorderSettings = {
  * BDD steps for authenticating against AWS Cognito
  */
 export const cognitoStepRunners = <W extends CognitoStepRunnerWorld>({
-	region,
 	developerProviderName,
 	emailAsUsername,
 }: {
 	developerProviderName: string
-	region: string
 	emailAsUsername?: boolean
 }): ((step: InterpolatedStep) => false | StepRunnerFunc<W>)[] => {
-	const ci = new CognitoIdentityClient({
-		region,
-	})
-	const cisp = new CognitoIdentityProviderClient({
-		region,
-	})
+	const ci = new CognitoIdentityClient({})
+	const cisp = new CognitoIdentityProviderClient({})
 	return [
 		regexMatcher<W>(/^I am authenticated with Cognito(?: as "([^"]+)")?$/)(
 			async ([userId], __, runner, { flags, settings }) => {

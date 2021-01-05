@@ -14,10 +14,8 @@ export type AWSSDKFlightRecorderSettings = {
  * BDD steps for using the AWS SDK directly
  */
 export const awsSdkStepRunners = ({
-	region,
 	constructorArgs,
 }: {
-	region: string
 	constructorArgs?: {
 		[key: string]: {
 			[key: string]: string
@@ -79,7 +77,6 @@ export const awsSdkStepRunners = ({
 				)
 			}
 			const args = {
-				region,
 				...constructorArgs?.[api],
 				...extraArgs,
 			}
