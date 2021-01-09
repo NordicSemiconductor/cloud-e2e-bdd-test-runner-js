@@ -32,7 +32,7 @@
   "dependencies": {
     "@aws-sdk/client-cognito-identity": "3.2.0",
     "@aws-sdk/client-cognito-identity-provider": "3.1.0",
-    "@aws-sdk/client-sqs": "3.1.0",
+    "@aws-sdk/client-sqs": "3.2.0",
     "@aws-sdk/credential-provider-cognito-identity": "3.1.0",
     "@aws-sdk/signature-v4": "3.1.0",
     "@types/backoff": "2.5.1",
