@@ -20,6 +20,10 @@ export const awsSdkStepRunners = ({
 		[key: string]: {
 			[key: string]: string
 		}
+	} & {
+		__all?: {
+			[key: string]: string
+		}
 	}
 }): ((step: InterpolatedStep) => false | StepRunnerFunc<Store>)[] => [
 	regexMatcher(/^I execute "([^"]+)" of the AWS ([^ ]+) SDK( with)?$/)(
@@ -77,6 +81,7 @@ export const awsSdkStepRunners = ({
 				)
 			}
 			const args = {
+				...constructorArgs?.__all,
 				...constructorArgs?.[api],
 				...extraArgs,
 			}
