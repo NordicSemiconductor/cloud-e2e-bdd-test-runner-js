@@ -1,10 +1,10 @@
-# End-to-end Behaviour Driven Design Test Runner [![npm version](https://img.shields.io/npm/v/@bifravst/e2e-bdd-test-runner.svg)](https://www.npmjs.com/package/@bifravst/e2e-bdd-test-runner)
+# End-to-end Behaviour Driven Design Test Runner [![npm version](https://img.shields.io/npm/v/@nordicsemiconductor/e2e-bdd-test-runner.svg)](https://www.npmjs.com/package/@nordicsemiconductor/e2e-bdd-test-runner)
 
-[![GitHub Actions](https://github.com/bifravst/e2e-bdd-test-runner/workflows/Test%20and%20Release/badge.svg)](https://github.com/bifravst/e2e-bdd-test-runner/actions)
-[![Known Vulnerabilities](https://snyk.io/test/github/bifravst/e2e-bdd-test-runner/badge.svg?targetFile=package.json)](https://snyk.io/test/github/bifravst/e2e-bdd-test-runner?targetFile=package.json)
+[![GitHub Actions](https://github.com/NordicSemiconductor/cloud-e2e-bdd-test-runner-js/workflows/Test%20and%20Release/badge.svg)](https://github.com/NordicSemiconductor/cloud-e2e-bdd-test-runner-js/actions)
+[![Known Vulnerabilities](https://snyk.io/test/github/NordicSemiconductor/cloud-e2e-bdd-test-runner-js/badge.svg?targetFile=package.json)](https://snyk.io/test/github/NordicSemiconductor/cloud-e2e-bdd-test-runner-js?targetFile=package.json)
 [![semantic-release](https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg)](https://github.com/semantic-release/semantic-release)
 [![Renovate](https://img.shields.io/badge/renovate-enabled-brightgreen.svg)](https://renovatebot.com)
-[![Mergify Status](https://img.shields.io/endpoint.svg?url=https://dashboard.mergify.io/badges/bifravst/e2e-bdd-test-runner&style=flat)](https://mergify.io)
+[![Mergify Status](https://img.shields.io/endpoint.svg?url=https://gh.mergify.io/badges/NordicSemiconductor/cloud-e2e-bdd-test-runner-js)](https://mergify.io)
 [![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg)](http://commitizen.github.io/cz-cli/)
 [![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg)](https://github.com/prettier/prettier/)
 [![ESLint: TypeScript](https://img.shields.io/badge/ESLint-TypeScript-blue.svg)](https://github.com/typescript-eslint/typescript-eslint)
@@ -16,11 +16,11 @@ Initially developed for use with [AWS](https://aws.amazon.com/) based solutions
 but also supports testing against generic REST, GraphQL, and Websocket APIs.
 
 Simple example usage:
-[e2e-bdd-test-runner-example](https://github.com/bifravst/e2e-bdd-test-runner-example).
+[e2e-bdd-test-runner-example](https://github.com/NordicSemiconductor/cloud-e2e-bdd-test-runner-js-example).
 
 Other projects using this project for testing:
 
-- [Bifravst AWS](https://github.com/bifravst/aws)
+- [Bifravst AWS](https://github.com/NordicSemiconductor/aws)
 - [Distribute Aid: Flexport Shipment Monitor](https://github.com/distributeaid/flexport-shipment-monitor)
 - [Distribute Aid: Twilio Integration](https://github.com/distributeaid/twilio-integration)
 - Use with Phoenix (Elixir):
@@ -52,7 +52,7 @@ public API of the project, they can be kept unchanged during refactoring.
 
 This also provides an easily grokable description of the working and implemented
 projects features in one folder
-([example](https://github.com/bifravst/aws/tree/saga/features)).
+([example](https://github.com/NordicSemiconductor/aws/tree/saga/features)).
 
 Below is a talk in English explaining this approach in detail:
 
@@ -63,7 +63,7 @@ Below is a talk in English explaining this approach in detail:
 
 ## Installation
 
-    npm i --save-dev @bifravst/e2e-bdd-test-runner
+    npm i --save-dev @nordicsemiconductor/e2e-bdd-test-runner
 
 ## Special annotations
 

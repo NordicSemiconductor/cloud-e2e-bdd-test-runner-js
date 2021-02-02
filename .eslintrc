@@ -1,5 +1,5 @@
 {
-  "extends": "@bifravst/eslint-config-typescript",
+  "extends": "@nordicsemiconductor/eslint-config-asset-tracker-cloud-typescript",
   "rules": {
     "require-atomic-updates": "off",
     "@typescript-eslint/no-require-imports": "off",
