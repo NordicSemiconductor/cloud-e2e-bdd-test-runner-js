@@ -16,7 +16,7 @@ Initially developed for use with [AWS](https://aws.amazon.com/) based solutions
 but also supports testing against generic REST, GraphQL, and Websocket APIs.
 
 Simple example usage:
-[e2e-bdd-test-runner-example](https://github.com/NordicSemiconductor/cloud-e2e-bdd-test-runner-js-example).
+[e2e-bdd-test-runner-example](https://github.com/NordicSemiconductor/cloud-e2e-bdd-test-runner-example-js).
 
 Other projects using this project for testing:
 
