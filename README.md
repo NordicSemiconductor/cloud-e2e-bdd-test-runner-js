@@ -20,7 +20,10 @@ Simple example usage:
 
 Other projects using this project for testing:
 
-- [Bifravst AWS](https://github.com/NordicSemiconductor/aws)
+- Asset Tracker Cloud Example
+  - [AWS implementation](https://github.com/NordicSemiconductor/asset-tracker-cloud-aws-js)
+  - [Azure implementation](https://github.com/NordicSemiconductor/asset-tracker-cloud-azure-js)
+  - [Firmware](https://github.com/NordicSemiconductor/asset-tracker-cloud-firmware)
 - [Distribute Aid: Flexport Shipment Monitor](https://github.com/distributeaid/flexport-shipment-monitor)
 - [Distribute Aid: Twilio Integration](https://github.com/distributeaid/twilio-integration)
 - Use with Phoenix (Elixir):
@@ -52,7 +55,7 @@ public API of the project, they can be kept unchanged during refactoring.
 
 This also provides an easily grokable description of the working and implemented
 projects features in one folder
-([example](https://github.com/NordicSemiconductor/aws/tree/saga/features)).
+([example](https://github.com/NordicSemiconductor/asset-tracker-cloud-aws-js/tree/saga/features)).
 
 Below is a talk in English explaining this approach in detail:
 
