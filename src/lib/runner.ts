@@ -367,9 +367,11 @@ export class FeatureRunner<W extends Store> {
 		const interpolatedStep = {
 			...step,
 			interpolatedText: r(`${step.text}`),
-			interpolatedArgument: step.docString
-				? r(`${step.docString.content}`)
-				: undefined,
+			interpolatedArgument:
+				step.docString?.content !== undefined &&
+				step.docString?.content !== null
+					? r(`${step.docString.content}`)
+					: undefined,
 		}
 
 		if (afterRx.test(`${step.text}`)) {
