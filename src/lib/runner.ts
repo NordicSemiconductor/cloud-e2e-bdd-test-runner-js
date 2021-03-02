@@ -432,7 +432,7 @@ export type ScenarioResult = Result & {
 }
 
 export type FeatureResult = Result & {
-	feature: SkippableFeature
+	feature: ContextualizedFeature | SkippableFeature
 	scenarioResults: ScenarioResult[]
 }
 

@@ -110,6 +110,23 @@ const reportFeature = (console: Console) => (result: FeatureResult) => {
 		)
 		console.log('')
 
+		if ('context' in result.feature) {
+			const ctx = Object.entries(result.feature.context)
+			if (ctx.length > 0) {
+				console.log('', '', chalk.grey('Context:'))
+				console.log('')
+			}
+			for (const [k, v] of ctx) {
+				console.log(
+					'',
+					'',
+					'',
+					chalk.grey(`${chalk.magenta.dim(k)}:`),
+					chalk.blue.dim(v),
+				)
+			}
+			if (ctx.length > 0) console.log('')
+		}
 		i.push(result.success ? chalk.green(' 💯') : chalk.red.bold(' ❌'))
 
 		if (result.runTime !== undefined) {
