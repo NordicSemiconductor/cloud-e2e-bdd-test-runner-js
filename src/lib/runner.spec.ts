@@ -1,4 +1,5 @@
 import * as path from 'path'
+import { regexGroupMatcher } from './regexGroupMatcher'
 import { FeatureRunner } from './runner'
 
 describe('runner', () => {
@@ -21,6 +22,31 @@ describe('runner', () => {
 				maxDelay: 100,
 				failAfter: 3,
 			})
+		})
+	})
+	describe('Feature contexts', () => {
+		it('should run a scenario for every context if given', async () => {
+			const logs: string[] = []
+			const result = await new FeatureRunner(
+				{},
+				{
+					dir: path.join(process.cwd(), 'test', 'feature-contexts'),
+					retry: false,
+				},
+			)
+				.addStepRunners([
+					regexGroupMatcher(/I log "(?<valueName>[^"]+)"/)(
+						async ({ valueName }) => {
+							logs.push(valueName)
+							return valueName
+						},
+					),
+				])
+				.run()
+
+			expect(result.success).toEqual(true)
+			expect(result.featureResults).toHaveLength(2)
+			expect(logs).toEqual(['Hello World', '¡Hola! Mundo'])
 		})
 	})
 })

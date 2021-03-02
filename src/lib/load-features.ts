@@ -21,6 +21,10 @@ export type SkippableFeature = cucumber.GherkinDocument.IFeature & {
 	dependsOn: cucumber.GherkinDocument.IFeature[]
 }
 
+export type ContextualizedFeature = SkippableFeature & {
+	context: Record<string, string>
+}
+
 export const parseFeatures = (featureData: Buffer[]): SkippableFeature[] => {
 	const parsedFeatures = featureData.map((d) => {
 		// Parse the feature files

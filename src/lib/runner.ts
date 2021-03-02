@@ -1,9 +1,14 @@
-import { fromDirectory, SkippableFeature } from './load-features'
+import {
+	ContextualizedFeature,
+	fromDirectory,
+	SkippableFeature,
+} from './load-features'
 import { ConsoleReporter } from './console-reporter'
 import { exponential } from 'backoff'
 import { messages as cucumber } from 'cucumber-messages'
 import { replaceStoragePlaceholders } from './replaceStoragePlaceholders'
 import { retryConfiguration, RetryConfiguration } from './retryConfiguration'
+import { contextualizeFeature } from './contextualizeFeature'
 
 const allSuccess = (r: boolean, result: Result) => (result.success ? r : false)
 
@@ -88,7 +93,15 @@ export class FeatureRunner<W extends Store> {
 							success: false,
 						})
 					} else {
-						featureResults.push(await this.runFeature(feature))
+						await contextualizeFeature(feature).reduce(
+							(p, contextualizedFeature) =>
+								p.then(() =>
+									this.runFeature(contextualizedFeature).then((res) => {
+										featureResults.push(res)
+									}),
+								),
+							Promise.resolve(),
+						)
 					}
 				}),
 			Promise.resolve(),
@@ -110,7 +123,7 @@ export class FeatureRunner<W extends Store> {
 		return result
 	}
 
-	async runFeature(feature: SkippableFeature): Promise<FeatureResult> {
+	async runFeature(feature: ContextualizedFeature): Promise<FeatureResult> {
 		await this.progress('feature', `${feature.name}`)
 		if (feature.skip) {
 			return {
@@ -125,6 +138,16 @@ export class FeatureRunner<W extends Store> {
 			flags: {},
 			settings: {},
 		} as const
+
+		// Replace contexts
+		const applyContext = (step?: string | null): string | undefined => {
+			if (step === undefined || step === null) return undefined
+			let replaced = step
+			for (const [k, v] of Object.entries(feature.context)) {
+				replaced = replaced.replace(`<${k}>`, v)
+			}
+			return replaced
+		}
 		await feature?.children?.reduce(
 			(promise, scenario) =>
 				promise.then(async () => {
@@ -167,11 +190,13 @@ export class FeatureRunner<W extends Store> {
 											name: `${scenario.scenario?.name} (${values?.join(',')})`,
 											steps: scenario.scenario?.steps?.map((step) => ({
 												...step,
-												text: replace(step.text ?? ''),
+												text: applyContext(replace(step.text ?? '')),
 												docString: step.docString
 													? {
 															...step.docString,
-															content: replace(step.docString.content ?? ''),
+															content: applyContext(
+																replace(step.docString.content ?? ''),
+															),
 													  }
 													: undefined,
 											})),
@@ -190,8 +215,25 @@ export class FeatureRunner<W extends Store> {
 							)
 						}
 					} else {
-						const s = scenario.scenario ?? scenario.background
-						if (s) {
+						const useScenario = scenario.scenario ?? scenario.background
+
+						if (useScenario !== undefined && useScenario !== null) {
+							const s:
+								| cucumber.GherkinDocument.Feature.IScenario
+								| cucumber.GherkinDocument.Feature.IBackground = {
+								...useScenario,
+							}
+							// Replace contexts
+							s.steps = [
+								...(s?.steps?.map((s) => ({
+									...s,
+									text: applyContext(s.text),
+									docString: {
+										...s.docString,
+										content: applyContext(s.docString?.content),
+									},
+								})) ?? []),
+							]
 							if (this.retry) {
 								scenarioResults.push(
 									await this.retryScenario(s, flightRecorder),
