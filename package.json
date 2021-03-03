@@ -45,7 +45,7 @@
     "@types/node-fetch": "2.5.8",
     "aws-sdk": "2.855.0",
     "backoff": "2.5.0",
-    "chai": "4.3.1",
+    "chai": "4.3.3",
     "chai-subset": "1.6.0",
     "chalk": "4.1.0",
     "fetch-ponyfill": "7.1.0",
