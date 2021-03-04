@@ -20,7 +20,7 @@ Simple example usage:
 
 Other projects using this project for testing:
 
-- Asset Tracker Cloud Example
+- nRF Asset Tracker
   - [AWS implementation](https://github.com/NordicSemiconductor/asset-tracker-cloud-aws-js)
   - [Azure implementation](https://github.com/NordicSemiconductor/asset-tracker-cloud-azure-js)
   - [Firmware](https://github.com/NordicSemiconductor/asset-tracker-cloud-firmware)
