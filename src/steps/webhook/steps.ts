@@ -1,11 +1,11 @@
 import * as jsonata from 'jsonata'
 import * as chai from 'chai'
 import { expect } from 'chai'
-import { regexMatcher } from '../lib/regexMatcher'
-import { WebhookReceiver } from '../lib/webhook-receiver'
+import { regexMatcher } from '../../lib/regexMatcher'
+import { WebhookReceiver } from './webhook-receiver'
 import * as chaiSubset from 'chai-subset'
-import { regexGroupMatcher } from '../lib/regexGroupMatcher'
-import { StepRunnerFunc, Store, InterpolatedStep } from '../lib/runner'
+import { regexGroupMatcher } from '../../lib/regexGroupMatcher'
+import { StepRunnerFunc, Store, InterpolatedStep } from '../../lib/runner'
 
 chai.use(chaiSubset)
 

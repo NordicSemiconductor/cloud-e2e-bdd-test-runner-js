@@ -3,7 +3,7 @@ import {
 	ReceiveMessageCommand,
 	SQSClient,
 } from '@aws-sdk/client-sqs'
-import { FeatureRunner } from './runner'
+import { FeatureRunner } from '../../lib/runner'
 
 type WebhookRequest = {
 	headers: { [key: string]: string }
