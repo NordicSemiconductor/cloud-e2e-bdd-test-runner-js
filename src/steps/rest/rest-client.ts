@@ -16,6 +16,7 @@ export type Headers = {
 }
 
 export type ParsedResponseBody = {
+	contentLength: number
 	json?: Record<string, any>
 	text?: string
 }
@@ -97,13 +98,14 @@ export class RestClient {
 		const contentType: string = res.headers.get('content-type') ?? ''
 		const mediaType: string = contentType.split(';')[0]
 
-		const { text, json } = await (
+		const { text, json, contentLength } = await (
 			this.parseBody ??
 			(async (res): Promise<ParsedResponseBody> => {
 				const contentLength = +(res.headers.get('content-length') ?? 0)
-				if (contentLength === 0) return {}
+				if (contentLength === 0) return { contentLength }
 				const text = await res.text()
 				return {
+					contentLength,
 					text,
 					json: (() => {
 						try {
@@ -127,7 +129,10 @@ export class RestClient {
 			throw new Error(errorMessage)
 		}
 
-		if (/^application\/([^ /]+\+)?json$/.test(mediaType) === false) {
+		if (
+			contentLength > 0 &&
+			/^application\/([^ /]+\+)?json$/.test(mediaType) === false
+		) {
 			const errorMessage = `The content-type "${contentType}" of the response is not JSON!`
 			this.errorLog?.(requestId, {
 				error: errorMessage,
