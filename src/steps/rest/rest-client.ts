@@ -15,6 +15,11 @@ export type Headers = {
 	[index: string]: string
 }
 
+export type ParsedResponseBody = {
+	json?: Record<string, any>
+	text?: string
+}
+
 export class RestClient {
 	headers: Headers = {
 		Accept: 'application/json',
@@ -33,28 +38,20 @@ export class RestClient {
 
 	debugLog
 	errorLog
-	getResponseStatusCode
-	getResponseContentType
-	getResponseContentLength
+	parseBody
 
 	constructor({
 		debugLog,
 		errorLog,
-		getResponseStatusCode,
-		getResponseContentType,
-		getResponseContentLength,
+		parseBody,
 	}: {
 		debugLog?: (requestId: string, ...args: any) => void
 		errorLog?: (requestId: string, ...args: any) => void
-		getResponseStatusCode?: (response: Response) => Promise<number>
-		getResponseContentType?: (response: Response) => Promise<string>
-		getResponseContentLength?: (response: Response) => Promise<number>
+		parseBody?: (response: Response) => Promise<ParsedResponseBody>
 	} = {}) {
 		this.debugLog = debugLog
 		this.errorLog = errorLog
-		this.getResponseStatusCode = getResponseStatusCode
-		this.getResponseContentType = getResponseContentType
-		this.getResponseContentLength = getResponseContentLength
+		this.parseBody = parseBody
 	}
 
 	async request(
@@ -92,44 +89,51 @@ export class RestClient {
 			},
 		})
 		const res = await fetch(url, options)
-		const statusCode: number = await (
-			this.getResponseStatusCode ?? ((res: any) => res.status)
-		)(res)
+		const statusCode: number = res.status
 		const h: Headers = {}
 		res.headers.forEach((v: string, k: string) => {
 			h[k] = v
 		})
-		const contentType: string = await (
-			this.getResponseContentType ??
-			((res: any) => res.headers.get('content-type') ?? '')
-		)(res)
+		const contentType: string = res.headers.get('content-type') ?? ''
 		const mediaType: string = contentType.split(';')[0]
+
+		const { text, json } = await (
+			this.parseBody ??
+			(async (res): Promise<ParsedResponseBody> => {
+				const contentLength = +(res.headers.get('content-length') ?? 0)
+				if (contentLength === 0) return {}
+				const text = await res.text()
+				return {
+					text,
+					json: (() => {
+						try {
+							return JSON.parse(text)
+						} catch {
+							return undefined
+						}
+					})(),
+				}
+			})
+		)(res)
+
 		if (!headers.Accept.includes(mediaType)) {
 			const errorMessage = `The content-type "${contentType}" of the response does not match accepted media-type ${headers.Accept}`
 			this.errorLog?.(requestId, {
 				error: errorMessage,
 				statusCode,
 				headers: h,
-				body: await res.text(),
+				body: text,
 			})
 			throw new Error(errorMessage)
 		}
 
-		const contentLength: number = await (
-			this.getResponseContentLength ??
-			((res: any) => +(res.headers.get('content-length') ?? 0))
-		)(res)
-
-		if (
-			contentLength > 0 &&
-			/^application\/([^ /]+\+)?json$/.test(mediaType) === false
-		) {
+		if (/^application\/([^ /]+\+)?json$/.test(mediaType) === false) {
 			const errorMessage = `The content-type "${contentType}" of the response is not JSON!`
 			this.errorLog?.(requestId, {
 				error: errorMessage,
 				statusCode,
 				headers: h,
-				body: await res.text(),
+				body: text,
 			})
 			throw new Error(errorMessage)
 		}
@@ -137,7 +141,7 @@ export class RestClient {
 		this.response = {
 			statusCode,
 			headers: h,
-			body: contentLength ? await res.json() : undefined,
+			body: json,
 		}
 		this.debugLog?.(requestId, {
 			response: {
