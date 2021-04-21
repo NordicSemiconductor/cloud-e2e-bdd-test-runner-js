@@ -2,7 +2,7 @@ import * as querystring from 'querystring'
 import * as fetchPonyfill from 'fetch-ponyfill'
 import { v4 } from 'uuid'
 
-const { fetch } = fetchPonyfill()
+const { fetch } = fetchPonyfill() as { fetch: typeof window.fetch }
 
 const toQueryString = (obj: any): string => {
 	if (!Object.keys(obj).length) {
@@ -46,9 +46,9 @@ export class RestClient {
 	}: {
 		debugLog?: (requestId: string, ...args: any) => void
 		errorLog?: (requestId: string, ...args: any) => void
-		getResponseStatusCode?: (response: any) => number
-		getResponseContentType?: (response: any) => string
-		getResponseContentLength?: (response: any) => number
+		getResponseStatusCode?: (response: Response) => Promise<number>
+		getResponseContentType?: (response: Response) => Promise<string>
+		getResponseContentLength?: (response: Response) => Promise<number>
 	} = {}) {
 		this.debugLog = debugLog
 		this.errorLog = errorLog
@@ -92,14 +92,14 @@ export class RestClient {
 			},
 		})
 		const res = await fetch(url, options)
-		const statusCode: number = (
+		const statusCode: number = await (
 			this.getResponseStatusCode ?? ((res: any) => res.status)
 		)(res)
 		const h: Headers = {}
 		res.headers.forEach((v: string, k: string) => {
 			h[k] = v
 		})
-		const contentType: string = (
+		const contentType: string = await (
 			this.getResponseContentType ??
 			((res: any) => res.headers.get('content-type') ?? '')
 		)(res)
@@ -115,7 +115,7 @@ export class RestClient {
 			throw new Error(errorMessage)
 		}
 
-		const contentLength: number = (
+		const contentLength: number = await (
 			this.getResponseContentLength ??
 			((res: any) => +(res.headers.get('content-length') ?? 0))
 		)(res)
