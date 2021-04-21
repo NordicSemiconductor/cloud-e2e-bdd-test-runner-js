@@ -33,16 +33,28 @@ export class RestClient {
 
 	debugLog
 	errorLog
+	getResponseStatusCode
+	getResponseContentType
+	getResponseContentLength
 
 	constructor({
 		debugLog,
 		errorLog,
+		getResponseStatusCode,
+		getResponseContentType,
+		getResponseContentLength,
 	}: {
 		debugLog?: (requestId: string, ...args: any) => void
 		errorLog?: (requestId: string, ...args: any) => void
+		getResponseStatusCode?: (response: any) => number
+		getResponseContentType?: (response: any) => string
+		getResponseContentLength?: (response: any) => number
 	} = {}) {
 		this.debugLog = debugLog
 		this.errorLog = errorLog
+		this.getResponseStatusCode = getResponseStatusCode
+		this.getResponseContentType = getResponseContentType
+		this.getResponseContentLength = getResponseContentLength
 	}
 
 	async request(
@@ -80,13 +92,18 @@ export class RestClient {
 			},
 		})
 		const res = await fetch(url, options)
-		const statusCode: number = res.status
+		const statusCode: number = (
+			this.getResponseStatusCode ?? ((res: any) => res.status)
+		)(res)
 		const h: Headers = {}
 		res.headers.forEach((v: string, k: string) => {
 			h[k] = v
 		})
-		const contentType: string = res.headers.get('content-type') ?? '',
-			mediaType: string = contentType.split(';')[0]
+		const contentType: string = (
+			this.getResponseContentType ??
+			((res: any) => res.headers.get('content-type') ?? '')
+		)(res)
+		const mediaType: string = contentType.split(';')[0]
 		if (!headers.Accept.includes(mediaType)) {
 			const errorMessage = `The content-type "${contentType}" of the response does not match accepted media-type ${headers.Accept}`
 			this.errorLog?.(requestId, {
@@ -98,7 +115,10 @@ export class RestClient {
 			throw new Error(errorMessage)
 		}
 
-		const contentLength: number = +(res.headers.get('content-length') ?? 0)
+		const contentLength: number = (
+			this.getResponseContentLength ??
+			((res: any) => +(res.headers.get('content-length') ?? 0))
+		)(res)
 
 		if (
 			contentLength > 0 &&
