@@ -22,7 +22,7 @@ Other projects using this project for testing:
 - nRF Asset Tracker
   - [AWS implementation](https://github.com/NordicSemiconductor/asset-tracker-cloud-aws-js)
   - [Azure implementation](https://github.com/NordicSemiconductor/asset-tracker-cloud-azure-js)
-  - [Firmware](https://github.com/NordicSemiconductor/asset-tracker-cloud-firmware)
+  - [Firmware](https://github.com/NordicSemiconductor/asset-tracker-cloud-firmware-aws)
 - [Distribute Aid: Flexport Shipment Monitor](https://github.com/distributeaid/flexport-shipment-monitor)
 - [Distribute Aid: Twilio Integration](https://github.com/distributeaid/twilio-integration)
 - Use with Phoenix (Elixir):
