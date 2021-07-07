@@ -39,7 +39,7 @@
     "@aws-sdk/credential-provider-cognito-identity": "3.20.0",
     "@aws-sdk/protocol-http": "3.20.0",
     "@aws-sdk/signature-v4": "3.20.0",
-    "@types/backoff": "2.5.1",
+    "@types/backoff": "2.5.2",
     "@types/chai": "4.2.20",
     "@types/glob": "7.1.4",
     "@types/node-fetch": "2.5.11",
