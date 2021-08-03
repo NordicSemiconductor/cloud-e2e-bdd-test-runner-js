@@ -52,7 +52,7 @@ describe('Console Reporter', () => {
 			/Feature Summary: {3}0 failed, 0 skipped, 5 passed, 5 total/,
 		)
 		expect(stripColors(logs)).toMatch(
-			/Scenario Summary: {2}0 failed, 0 skipped, 14 passed, 14 total/,
+			/Scenario Summary: {2}0 failed, 0 skipped, 15 passed, 15 total/,
 		)
 	})
 	it('should not print a summary if printSummary=false', async () => {

@@ -103,7 +103,7 @@ export const storageStepRunners = (
 		return [data, runner.store[storeName]]
 	}),
 	regexGroupMatcher(
-		/^I store a random number between (?<minInclusive>[0-9]+) and (?<maxInclusive>[0-9]+) into "(?<storeName>[^"]+)"$/,
+		/^I store a random number between (?<minInclusive>-?[0-9]+) and (?<maxInclusive>-?[0-9]+) into "(?<storeName>[^"]+)"$/,
 	)(async ({ minInclusive, maxInclusive, storeName }, _, runner) => {
 		const min = parseInt(minInclusive, 10)
 		const max = parseInt(maxInclusive, 10)
