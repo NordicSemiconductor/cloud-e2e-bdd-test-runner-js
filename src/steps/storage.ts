@@ -109,7 +109,7 @@ export const storageStepRunners = (
 		const max = parseInt(maxInclusive, 10)
 		if (max <= min)
 			throw new Error(`max inclusive ${max} must be greater than ${min}!`)
-		const n = Math.floor(max - min) + min
+		const n = Math.floor(Math.random() * (max - min)) + min
 		runner.store[storeName] = n
 		return [n]
 	}),
