@@ -98,7 +98,9 @@ export const storageStepRunners = (
 			runner.store[storeName] = encoder(data)
 		} catch (err) {
 			console.error(data)
-			throw new Error(`Encoding using ${encoding} failed: ${err.message}!`)
+			throw new Error(
+				`Encoding using ${encoding} failed: ${(err as Error).message}!`,
+			)
 		}
 		return [data, runner.store[storeName]]
 	}),
