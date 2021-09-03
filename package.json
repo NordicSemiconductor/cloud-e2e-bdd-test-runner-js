@@ -42,7 +42,7 @@
     "@types/backoff": "2.5.2",
     "@types/chai": "4.2.21",
     "@types/glob": "7.1.4",
-    "@types/node-fetch": "3.0.0",
+    "@types/node-fetch": "3.0.2",
     "aws-sdk": "2.982.0",
     "backoff": "2.5.0",
     "chai": "4.3.4",
