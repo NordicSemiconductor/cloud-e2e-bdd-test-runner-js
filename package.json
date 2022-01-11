@@ -19,11 +19,11 @@
     "url": "https://github.com/NordicSemiconductor/cloud-e2e-bdd-test-runner-js.git"
   },
   "keywords": [
-    "BDD",
+    "bdd",
     "end-to-end",
     "testing",
     "serverless",
-    "cloud native",
+    "cloud-native",
     "aws"
   ],
   "author": "Nordic Semiconductor ASA | nordicsemi.no",
