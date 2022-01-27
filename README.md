@@ -65,7 +65,7 @@ Below is a talk in English explaining this approach in detail:
 
 ## Installation
 
-    npm i --save-dev @nordicsemiconductor/e2e-bdd-test-runner
+    npm i --save-dev --save-exact @nordicsemiconductor/e2e-bdd-test-runner
 
 ## Special annotations
 
