@@ -60,7 +60,7 @@
   "devDependencies": {
     "@nordicsemiconductor/asset-tracker-cloud-code-style": "11.0.28",
     "@types/chai-subset": "1.3.3",
-    "@types/jest": "27.4.0",
+    "@types/jest": "27.4.1",
     "@types/node": "16.11.25",
     "@types/toposort": "2.0.3",
     "@types/uuid": "8.3.4",
