@@ -37,7 +37,7 @@
     "@aws-sdk/client-cognito-identity-provider": "3.52.0",
     "@aws-sdk/client-sqs": "3.52.0",
     "@aws-sdk/credential-provider-cognito-identity": "3.52.0",
-    "@aws-sdk/protocol-http": "3.52.0",
+    "@aws-sdk/protocol-http": "3.53.0",
     "@aws-sdk/signature-v4": "3.52.0",
     "@types/backoff": "2.5.2",
     "@types/chai": "4.3.0",
