@@ -43,7 +43,7 @@
     "@types/chai": "4.3.1",
     "@types/glob": "7.2.0",
     "@types/node-fetch": "3.0.2",
-    "aws-sdk": "2.1118.0",
+    "aws-sdk": "2.1119.0",
     "backoff": "2.5.0",
     "chai": "4.3.6",
     "chai-subset": "1.6.0",
