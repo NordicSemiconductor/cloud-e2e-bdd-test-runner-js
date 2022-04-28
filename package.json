@@ -53,7 +53,7 @@
     "glob": "8.0.1",
     "graphql": "16.4.0",
     "jsonata": "1.8.6",
-    "node-fetch": "3.2.3",
+    "node-fetch": "3.2.4",
     "toposort": "2.0.2",
     "uuid": "8.3.2"
   },
