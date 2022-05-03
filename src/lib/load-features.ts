@@ -1,17 +1,16 @@
-import { afterRx } from './runner'
-import TokenScanner from 'gherkin/dist/src/TokenScanner'
+import { IdGenerator, messages as cucumber } from 'cucumber-messages'
+import { readFileSync } from 'fs'
 import AstBuilder from 'gherkin/dist/src/AstBuilder'
-import { IdGenerator } from 'cucumber-messages'
 import Parser from 'gherkin/dist/src/Parser'
 import TokenMatcher from 'gherkin/dist/src/TokenMatcher'
-import { messages as cucumber } from 'cucumber-messages'
-import * as toposort from 'toposort'
-import * as globAsync from 'glob'
-import { promisify } from 'util'
+import TokenScanner from 'gherkin/dist/src/TokenScanner'
+import globAsync from 'glob'
 import * as path from 'path'
+import toposort from 'toposort'
+import { promisify } from 'util'
+import { afterRx } from './runner'
 
 const glob = promisify(globAsync)
-import { readFileSync } from 'fs'
 
 const parser = new Parser(new AstBuilder(IdGenerator.uuid()))
 const matcher = new TokenMatcher()
@@ -89,12 +88,13 @@ export const parseFeatures = (featureData: Buffer[]): SkippableFeature[] => {
 		})
 
 	// Now bring the features in the right order
-	const sortedFeatures: cucumber.GherkinDocument.IFeature[] = sortedFeatureNames.map(
-		(featureName: string) =>
-			parsedFeatures.find(
-				({ name }) => name === featureName,
-			) as cucumber.GherkinDocument.IFeature,
-	)
+	const sortedFeatures: cucumber.GherkinDocument.IFeature[] =
+		sortedFeatureNames.map(
+			(featureName: string) =>
+				parsedFeatures.find(
+					({ name }) => name === featureName,
+				) as cucumber.GherkinDocument.IFeature,
+		)
 
 	// Find features to be skipped
 	const isOnly = (f: cucumber.GherkinDocument.IFeature) =>
