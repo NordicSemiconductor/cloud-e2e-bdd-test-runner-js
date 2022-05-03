@@ -1,5 +1,5 @@
+import fetchPonyfill from 'fetch-ponyfill'
 import * as querystring from 'querystring'
-import * as fetchPonyfill from 'fetch-ponyfill'
 import { v4 } from 'uuid'
 
 const { fetch } = fetchPonyfill() as { fetch: typeof window.fetch }

@@ -1,11 +1,11 @@
-import * as jsonata from 'jsonata'
 import * as chai from 'chai'
 import { expect } from 'chai'
-import { regexMatcher } from '../../lib/regexMatcher'
-import { WebhookReceiver } from './webhook-receiver'
-import * as chaiSubset from 'chai-subset'
+import chaiSubset from 'chai-subset'
+import jsonata from 'jsonata'
 import { regexGroupMatcher } from '../../lib/regexGroupMatcher'
-import { StepRunnerFunc, Store, InterpolatedStep } from '../../lib/runner'
+import { regexMatcher } from '../../lib/regexMatcher'
+import { InterpolatedStep, StepRunnerFunc, Store } from '../../lib/runner'
+import { WebhookReceiver } from './webhook-receiver'
 
 chai.use(chaiSubset)
 
@@ -16,10 +16,9 @@ export const webhookStepRunners = ({
 }): ((step: InterpolatedStep) => false | StepRunnerFunc<Store>)[] => {
 	let r: WebhookReceiver
 	return [
-		regexMatcher(
-			/^the Webhook Receiver "([^"]+)" should be called$/,
-		)(async ([MessageGroupId], _, runner) =>
-			r.receiveWebhookRequest(MessageGroupId, runner).then((r) => r.body),
+		regexMatcher(/^the Webhook Receiver "([^"]+)" should be called$/)(
+			async ([MessageGroupId], _, runner) =>
+				r.receiveWebhookRequest(MessageGroupId, runner).then((r) => r.body),
 		),
 		regexMatcher(
 			/^"([^"]+)" of the webhook request body should equal "([^"]+)"$/,

@@ -1,10 +1,10 @@
-import * as jsonata from 'jsonata'
 import * as chai from 'chai'
-import { RestClient } from './rest-client'
 import { expect } from 'chai'
+import chaiSubset from 'chai-subset'
+import jsonata from 'jsonata'
 import { regexMatcher } from '../../lib/regexMatcher'
 import { InterpolatedStep, StepRunnerFunc, Store } from '../../lib/runner'
-import * as chaiSubset from 'chai-subset'
+import { RestClient } from './rest-client'
 
 chai.use(chaiSubset)
 

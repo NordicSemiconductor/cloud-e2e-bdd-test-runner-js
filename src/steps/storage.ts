@@ -1,8 +1,8 @@
-import * as jsonata from 'jsonata'
 import * as chai from 'chai'
 import { expect } from 'chai'
+import chaiSubset from 'chai-subset'
+import jsonata from 'jsonata'
 import { regexGroupMatcher } from '../lib/regexGroupMatcher'
-import * as chaiSubset from 'chai-subset'
 import { InterpolatedStep, StepRunnerFunc, Store } from '../lib/runner'
 
 chai.use(chaiSubset)

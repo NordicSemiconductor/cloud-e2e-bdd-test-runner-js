@@ -1,3 +1,6 @@
+import * as Chai from 'chai'
+import chalk from 'chalk'
+import { messages as cucumber } from 'cucumber-messages'
 import {
 	FeatureResult,
 	Reporter,
@@ -6,9 +9,6 @@ import {
 	StepResult,
 	StepRunnerNotDefinedError,
 } from './runner'
-import * as chalk from 'chalk'
-import * as Chai from 'chai'
-import { messages as cucumber } from 'cucumber-messages'
 
 export type Config = {
 	printResults: boolean
@@ -169,90 +169,88 @@ const reportScenario = (console: Console) => (result: ScenarioResult) => {
 	console.log('')
 }
 
-const reportRunResult = (console: Console) => (
-	success: boolean,
-	runTime?: number,
-) => {
-	console.log('')
-	const i = [
-		success ? chalk.green(' 💯 ALL PASS 👍 ') : chalk.red.bold(' ❌ FAIL 👎 '),
-	]
-	if (runTime !== undefined) {
-		i.push(chalk.blue(`⏱ ${runTime}ms`))
-	}
-	if (success) {
-		i.push('')
-	}
-	console.log(' ', ...i)
-	console.log('')
-}
-
-const reportStep = (console: Console) => (
-	result: StepResult,
-	config: Config,
-) => {
-	const i = [' ']
-	if (result.skipped) {
-		i.push(chalk.gray(' ↷ '))
-		i.push(chalk.gray(result.step.interpolatedText))
-		i.push(chalk.magenta('(skipped)'))
-	} else {
-		if (result.success) {
-			i.push(chalk.green(' ✔ '))
-			i.push(chalk.yellow(result.step.interpolatedText))
-			if (result.runTime !== undefined) {
-				i.push(chalk.blue(`⏱ ${result.runTime}ms`))
-			}
-		} else {
-			i.push(chalk.red.bold(' ❌ '))
-			i.push(chalk.red.bold(result.step.interpolatedText))
-		}
-	}
-	console.log(...i)
-	if (result.step.interpolatedArgument !== undefined) {
-		console.log(
-			chalk.yellow.dim('   ▶ '),
-			chalk.yellow.dim(
-				result.step.interpolatedArgument.replace(/\n\s*/g, ' ').trimLeft(),
-			),
-		)
-	}
-	if (result.result !== undefined && config.printResults) {
-		const results = [
-			...(Array.isArray(result.result) ? result.result : [result.result]),
+const reportRunResult =
+	(console: Console) => (success: boolean, runTime?: number) => {
+		console.log('')
+		const i = [
+			success
+				? chalk.green(' 💯 ALL PASS 👍 ')
+				: chalk.red.bold(' ❌ FAIL 👎 '),
 		]
-		results.forEach((r) => {
-			console.log(chalk.cyan('   ◀ '), chalk.cyan(JSON.stringify(r)))
-		})
+		if (runTime !== undefined) {
+			i.push(chalk.blue(`⏱ ${runTime}ms`))
+		}
+		if (success) {
+			i.push('')
+		}
+		console.log(' ', ...i)
+		console.log('')
 	}
-	if (result.error) {
-		if (
-			result.error instanceof StepRunnerNotDefinedError &&
-			result.error.step.interpolatedText !== result.error.step.text
-		) {
+
+const reportStep =
+	(console: Console) => (result: StepResult, config: Config) => {
+		const i = [' ']
+		if (result.skipped) {
+			i.push(chalk.gray(' ↷ '))
+			i.push(chalk.gray(result.step.interpolatedText))
+			i.push(chalk.magenta('(skipped)'))
+		} else {
+			if (result.success) {
+				i.push(chalk.green(' ✔ '))
+				i.push(chalk.yellow(result.step.interpolatedText))
+				if (result.runTime !== undefined) {
+					i.push(chalk.blue(`⏱ ${result.runTime}ms`))
+				}
+			} else {
+				i.push(chalk.red.bold(' ❌ '))
+				i.push(chalk.red.bold(result.step.interpolatedText))
+			}
+		}
+		console.log(...i)
+		if (result.step.interpolatedArgument !== undefined) {
 			console.log(
-				chalk.grey('   ▶'),
-				chalk.grey(result.error.step.interpolatedText),
+				chalk.yellow.dim('   ▶ '),
+				chalk.yellow.dim(
+					result.step.interpolatedArgument.replace(/\n\s*/g, ' ').trimLeft(),
+				),
 			)
 		}
-		console.error(
-			' ',
-			chalk.red.bold(' 🚨 '),
-			chalk.yellow.bold('👆'),
-			chalk.yellow(result.error.message),
-		)
-		if (result.error instanceof Chai.AssertionError) {
-			console.log(
-				chalk.green('   Expected:'),
-				JSON.stringify((result.error as any).expected),
+		if (result.result !== undefined && config.printResults) {
+			const results = [
+				...(Array.isArray(result.result) ? result.result : [result.result]),
+			]
+			results.forEach((r) => {
+				console.log(chalk.cyan('   ◀ '), chalk.cyan(JSON.stringify(r)))
+			})
+		}
+		if (result.error) {
+			if (
+				result.error instanceof StepRunnerNotDefinedError &&
+				result.error.step.interpolatedText !== result.error.step.text
+			) {
+				console.log(
+					chalk.grey('   ▶'),
+					chalk.grey(result.error.step.interpolatedText),
+				)
+			}
+			console.error(
+				' ',
+				chalk.red.bold(' 🚨 '),
+				chalk.yellow.bold('👆'),
+				chalk.yellow(result.error.message),
 			)
-			console.log(
-				chalk.red.bold('   Actual:  '),
-				JSON.stringify((result.error as any).actual),
-			)
+			if (result.error instanceof Chai.AssertionError) {
+				console.log(
+					chalk.green('   Expected:'),
+					JSON.stringify((result.error as any).expected),
+				)
+				console.log(
+					chalk.red.bold('   Actual:  '),
+					JSON.stringify((result.error as any).actual),
+				)
+			}
 		}
 	}
-}
 
 const reportSummary = (console: Console) => (result: RunResult) => {
 	// Print failed scenario and Feature
@@ -295,11 +293,10 @@ const reportSummary = (console: Console) => (result: RunResult) => {
 	const passedFeatures = features - skippedFeatures - failedFeatures
 	const passedScenarioCount = scenarios - skippedScenarios - failedScenarios
 
-	const colorIf = (color: chalk.Chalk, defaultColor = chalk.green) => (
-		cond: (n: number) => boolean,
-		n: number,
-		c = n,
-	) => (cond(c) ? color(n) : defaultColor(n))
+	const colorIf =
+		(color: chalk.Chalk, defaultColor = chalk.green) =>
+		(cond: (n: number) => boolean, n: number, c = n) =>
+			cond(c) ? color(n) : defaultColor(n)
 	const redIf = colorIf(chalk.redBright.bold)
 	const yellowIf = colorIf(chalk.yellow, chalk.gray)
 
