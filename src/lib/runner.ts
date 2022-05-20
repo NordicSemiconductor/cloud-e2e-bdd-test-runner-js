@@ -1,18 +1,18 @@
+import { exponential } from 'backoff'
+import { messages as cucumber } from 'cucumber-messages'
+import { ConsoleReporter } from './console-reporter'
+import { contextualizeFeature } from './contextualizeFeature'
 import {
 	ContextualizedFeature,
 	fromDirectory,
 	SkippableFeature,
 } from './load-features'
-import { ConsoleReporter } from './console-reporter'
-import { exponential } from 'backoff'
-import { messages as cucumber } from 'cucumber-messages'
 import { replaceStoragePlaceholders } from './replaceStoragePlaceholders'
 import { retryConfiguration, RetryConfiguration } from './retryConfiguration'
-import { contextualizeFeature } from './contextualizeFeature'
 
 const allSuccess = (r: boolean, result: Result) => (result.success ? r : false)
 
-export type FlightRecorder = {
+export type FlightRecorder = cucumber.GherkinDocument.IFeature & {
 	flags: { [key: string]: boolean }
 	settings: { [key: string]: any }
 }
@@ -135,6 +135,7 @@ export class FeatureRunner<W extends Store> {
 		const startRun = Date.now()
 		const scenarioResults: ScenarioResult[] = []
 		const flightRecorder: FlightRecorder = {
+			...feature,
 			flags: {},
 			settings: {},
 		} as const
