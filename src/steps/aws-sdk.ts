@@ -1,8 +1,8 @@
 import * as AWS from 'aws-sdk'
-import { regexMatcher } from '../lib/regexMatcher'
-import * as cognito from './cognito'
-import { InterpolatedStep, StepRunnerFunc, Store } from '../lib/runner'
 import { regexGroupMatcher } from '../lib/regexGroupMatcher'
+import { regexMatcher } from '../lib/regexMatcher'
+import { InterpolatedStep, StepRunnerFunc, Store } from '../lib/runner'
+import * as cognito from './cognito'
 
 export const accessKeyAuthentication = 'accessKeyAuthentication'
 export type AWSSDKFlightRecorderSettings = {
@@ -45,14 +45,10 @@ export const awsSdkStepRunners = ({
 			const cognitoEnabled = flightRecorder.flags[cognito.cognitoAuthentication]
 			const accessKeyAuth = flightRecorder.flags[accessKeyAuthentication]
 			if (cognitoEnabled) {
-				const {
-					secretAccessKey,
-					identityId,
-					accessKeyId,
-					sessionToken,
-				} = flightRecorder.settings[
-					cognito.cognitoAuthentication
-				] as cognito.CognitoFlightRecorderSettings
+				const { secretAccessKey, identityId, accessKeyId, sessionToken } =
+					flightRecorder.settings[
+						cognito.cognitoAuthentication
+					] as cognito.CognitoFlightRecorderSettings
 				extraArgs = {
 					credentials: {
 						secretAccessKey,

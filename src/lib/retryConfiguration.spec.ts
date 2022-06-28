@@ -1,4 +1,4 @@
-import { retryConfiguration, defaultRetryConfig } from './retryConfiguration'
+import { defaultRetryConfig, retryConfiguration } from './retryConfiguration'
 
 describe('retryConfiguration', () => {
 	it('should parse the @Retry tag', () => {

@@ -1,7 +1,7 @@
 import * as path from 'path'
-import { FeatureRunner } from './runner'
-import { ConsoleReporter, Config } from './console-reporter'
 import { storageStepRunners } from '../steps/storage'
+import { Config, ConsoleReporter } from './console-reporter'
+import { FeatureRunner } from './runner'
 
 const createRunner = (config?: Partial<Config>) => {
 	const mockConsole = {

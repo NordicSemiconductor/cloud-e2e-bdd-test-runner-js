@@ -1,7 +1,7 @@
 import * as path from 'path'
 import { FeatureRunner } from '../lib/runner'
-import { storageStepRunners } from './storage'
 import { randomStepRunners } from './random'
+import { storageStepRunners } from './storage'
 
 describe('randomSteps', () => {
 	it('should generate a random UUID v4 by default', async () => {

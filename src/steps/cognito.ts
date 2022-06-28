@@ -1,5 +1,3 @@
-import { Store, InterpolatedStep, StepRunnerFunc } from '../lib/runner'
-import { regexMatcher } from '../lib/regexMatcher'
 import {
 	CognitoIdentityClient,
 	GetCredentialsForIdentityCommand,
@@ -11,6 +9,8 @@ import {
 	AdminRespondToAuthChallengeCommand,
 	CognitoIdentityProviderClient,
 } from '@aws-sdk/client-cognito-identity-provider'
+import { regexMatcher } from '../lib/regexMatcher'
+import { InterpolatedStep, StepRunnerFunc, Store } from '../lib/runner'
 
 const randSeq = () =>
 	Math.random()
