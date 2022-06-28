@@ -1,5 +1,5 @@
-import { regexGroupMatcher } from '../lib/regexGroupMatcher'
 import { v4 } from 'uuid'
+import { regexGroupMatcher } from '../lib/regexGroupMatcher'
 import { InterpolatedStep, StepRunnerFunc, Store } from '../lib/runner'
 
 export type RandomStringGenerators = { [key: string]: () => string }

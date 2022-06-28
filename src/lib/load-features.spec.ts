@@ -1,5 +1,5 @@
-import { fromDirectory } from './load-features'
 import * as path from 'path'
+import { fromDirectory } from './load-features'
 
 describe('load-features', () => {
 	describe('should support dependencies', () => {

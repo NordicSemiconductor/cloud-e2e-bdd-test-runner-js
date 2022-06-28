@@ -24,7 +24,7 @@ export const parseContexts = (
 		}
 		table.push(
 			lines[line]
-				.substr(1, lines[line].length - 2)
+				.slice(1, 1 + lines[line].length - 2)
 				.split('|')
 				.map((s) => s.trim()),
 		)

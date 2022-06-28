@@ -1,6 +1,6 @@
-import { FeatureRunner } from './runner'
 import * as path from 'path'
 import { regexGroupMatcher } from './regexGroupMatcher'
+import { FeatureRunner } from './runner'
 
 describe('regexGroupMatcher', () => {
 	it('should match groups', async () => {
