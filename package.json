@@ -51,7 +51,7 @@
     "fetch-ponyfill": "7.1.0",
     "gherkin": "9.0.0",
     "glob": "8.0.3",
-    "graphql": "16.5.0",
+    "graphql": "16.6.0",
     "jsonata": "1.8.6",
     "node-fetch": "3.2.10",
     "toposort": "2.0.2",
