@@ -33,10 +33,10 @@
   },
   "homepage": "https://github.com/NordicSemiconductor/cloud-e2e-bdd-test-runner-js#readme",
   "dependencies": {
-    "@aws-sdk/client-cognito-identity": "3.154.0",
+    "@aws-sdk/client-cognito-identity": "3.157.0",
     "@aws-sdk/client-cognito-identity-provider": "3.154.0",
     "@aws-sdk/client-sqs": "3.154.0",
-    "@aws-sdk/credential-provider-cognito-identity": "3.154.0",
+    "@aws-sdk/credential-provider-cognito-identity": "3.157.0",
     "@aws-sdk/protocol-http": "3.127.0",
     "@aws-sdk/signature-v4": "3.130.0",
     "@types/backoff": "2.5.2",
