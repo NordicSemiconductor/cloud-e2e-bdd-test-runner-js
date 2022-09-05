@@ -55,7 +55,7 @@
     "jsonata": "1.8.6",
     "node-fetch": "3.2.10",
     "toposort": "2.0.2",
-    "uuid": "8.3.2"
+    "uuid": "9.0.0"
   },
   "devDependencies": {
     "@nordicsemiconductor/asset-tracker-cloud-code-style": "11.0.121",
