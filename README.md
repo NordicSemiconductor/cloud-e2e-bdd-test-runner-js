@@ -8,6 +8,9 @@
 [![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg)](https://github.com/prettier/prettier/)
 [![ESLint: TypeScript](https://img.shields.io/badge/ESLint-TypeScript-blue.svg)](https://github.com/typescript-eslint/typescript-eslint)
 
+> **Note**  
+> Check out the next evolution of this project: [@nordicsemiconductor/bdd-markdown](https://github.com/NordicSemiconductor/bdd-markdown-js)
+
 Implementation of a test-runner for end-to-end tests of cloud-native
 applications using [Gherkin features](https://docs.cucumber.io/gherkin/).
 
