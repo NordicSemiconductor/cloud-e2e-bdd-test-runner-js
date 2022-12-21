@@ -1,4 +1,4 @@
-import { v4 } from 'uuid'
+import { randomUUID } from 'node:crypto'
 import { regexGroupMatcher } from '../lib/regexGroupMatcher'
 import { InterpolatedStep, StepRunnerFunc, Store } from '../lib/runner'
 
@@ -6,7 +6,7 @@ export type RandomStringGenerators = { [key: string]: () => string }
 
 export const randomStepRunners = (
 	{ generators }: { generators: RandomStringGenerators } = {
-		generators: { UUID: (): string => v4() },
+		generators: { UUID: (): string => randomUUID() },
 	},
 ): ((step: InterpolatedStep) => false | StepRunnerFunc<Store>)[] => [
 	regexGroupMatcher(

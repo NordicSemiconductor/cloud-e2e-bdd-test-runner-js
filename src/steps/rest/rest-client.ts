@@ -1,6 +1,6 @@
 import fetchPonyfill from 'fetch-ponyfill'
+import { randomUUID } from 'node:crypto'
 import * as querystring from 'querystring'
-import { v4 } from 'uuid'
 
 const { fetch } = fetchPonyfill() as { fetch: typeof window.fetch }
 
@@ -61,7 +61,7 @@ export class RestClient {
 		extraHeaders?: Headers,
 		body?: unknown,
 	): Promise<string> {
-		const requestId = v4()
+		const requestId = randomUUID()
 		const headers: Headers = {
 			...this.headers,
 			...extraHeaders,
