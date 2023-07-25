@@ -51,7 +51,7 @@
     "glob": "8.1.0",
     "graphql": "16.7.1",
     "jsonata": "1.8.6",
-    "node-fetch": "3.3.1",
+    "node-fetch": "3.3.2",
     "toposort": "2.0.2"
   },
   "devDependencies": {
