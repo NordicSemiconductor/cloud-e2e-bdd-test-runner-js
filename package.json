@@ -50,7 +50,7 @@
     "gherkin": "9.0.0",
     "glob": "8.1.0",
     "graphql": "16.8.1",
-    "jsonata": "1.8.6",
+    "jsonata": "2.0.3",
     "node-fetch": "3.3.2",
     "toposort": "2.0.2"
   },
